@@ -1,0 +1,25 @@
+{
+    "canonical_key_regex": "^[a-z0-9_\\/]+$",
+    "deterministic_timestamp": true,
+    "router_decision_why_enum": [
+        "matched_R1_math",
+        "matched_R2_profile",
+        "matched_R3_knowledge",
+        "matched_R4_fallback"
+    ],
+    "memory_types_stage0": [
+        "semantic"
+    ],
+    "replay_validate_fields": [
+        "router_decision",
+        "agent_outputs",
+        "sem_reads",
+        "sem_writes",
+        "final_output",
+        "council_votes",
+        "claims",
+        "evidence_items",
+        "brainstate_before",
+        "brainstate_after"
+    ]
+}

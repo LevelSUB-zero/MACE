@@ -1,0 +1,17 @@
+{
+  "run_id": "test_run",
+  "timestamp": 1764417415.4939566,
+  "apt": {
+    "total_calls": 1,
+    "approved_count": 1,
+    "rejected_count": 0,
+    "total_latency_ms": 100
+  },
+  "derived": {
+    "avg_latency_ms": 100.0,
+    "approval_rate": 1.0
+  },
+  "repair_loop_frequency": 0,
+  "average_repair_iterations": 0,
+  "replay_determinism_rate": 1.0
+}

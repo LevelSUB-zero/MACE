@@ -1,0 +1,931 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RA9 Full Schema Bundle",
+  "type": "object",
+  "properties": {
+    "schemas": {
+      "type": "object",
+      "properties": {
+        "Percept": {
+          "$ref": "#/definitions/Percept"
+        },
+        "MemoryItem": {
+          "$ref": "#/definitions/MemoryItem"
+        },
+        "AgentOutput": {
+          "$ref": "#/definitions/AgentOutput"
+        },
+        "CouncilVote": {
+          "$ref": "#/definitions/CouncilVote"
+        },
+        "ReflectiveLogEntry": {
+          "$ref": "#/definitions/ReflectiveLogEntry"
+        },
+        "BrainState": {
+          "$ref": "#/definitions/BrainState"
+        },
+        "SelfModel": {
+          "$ref": "#/definitions/SelfModel"
+        },
+        "ClaimExtraction": {
+          "$ref": "#/definitions/ClaimExtraction"
+        },
+        "EvidenceObject": {
+          "$ref": "#/definitions/EvidenceObject"
+        },
+        "RouterDecision": {
+          "$ref": "#/definitions/ExtendedRouterDecision"
+        },
+        "ErrorEvent": {
+          "$ref": "#/definitions/ExtendedErrorEvent"
+        },
+        "ModuleDescriptor": {
+          "$ref": "#/definitions/ExtendedModuleDescriptor"
+        }
+      }
+    }
+  },
+  "definitions": {
+    /* -------------------------------------------------
+       1.  PERCEPT
+    ---------------------------------------------------*/
+    "Percept": {
+      "type": "object",
+      "required": [
+        "percept_id",
+        "text",
+        "intent",
+        "complexity"
+      ],
+      "properties": {
+        "percept_id": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "intent": {
+          "type": "string"
+        },
+        "complexity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "embedding": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "emotion": {
+          "type": "string"
+        },
+        "memory_prediction": {
+          "type": "string"
+        },
+        "urgency": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "risk": {
+          "type": "string",
+          "enum": [
+            "none",
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    /* -------------------------------------------------
+       2.  MEMORY ITEM (with 4 subtypes)
+    ---------------------------------------------------*/
+    "MemoryItem": {
+      "type": "object",
+      "required": [
+        "memory_id",
+        "memory_type",
+        "content",
+        "priority"
+      ],
+      "properties": {
+        "memory_id": {
+          "type": "string"
+        },
+        "memory_type": {
+          "type": "string",
+          "enum": [
+            "episodic",
+            "semantic",
+            "cwm",
+            "wm"
+          ]
+        },
+        "canonical_key": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "structured": {
+              "type": [
+                "object",
+                "null"
+              ]
+            }
+          }
+        },
+        "embedding": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "priority": {
+          "type": "object",
+          "properties": {
+            "recency": {
+              "type": "number"
+            },
+            "frequency": {
+              "type": "number"
+            },
+            "relevance": {
+              "type": "number"
+            },
+            "novelty": {
+              "type": "number"
+            },
+            "trust": {
+              "type": "number"
+            }
+          }
+        },
+        "episodic_specific": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "semantic_specific": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "version": {
+              "type": "string"
+            },
+            "provenance": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "cwm_specific": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "working_specific": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    /* -------------------------------------------------
+       3.  AGENT OUTPUT
+    ---------------------------------------------------*/
+    "AgentOutput": {
+      "type": "object",
+      "required": [
+        "agent_id",
+        "text",
+        "confidence",
+        "reasoning_trace"
+      ],
+      "properties": {
+        "agent_id": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "reasoning_trace": {
+          "type": "string"
+        },
+        "raw_output": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    /* -------------------------------------------------
+       4.  COUNCIL VOTE
+    ---------------------------------------------------*/
+    "CouncilVote": {
+      "type": "object",
+      "required": [
+        "vote_id",
+        "agent_id",
+        "correctness",
+        "relevance",
+        "safety",
+        "coherence",
+        "approve"
+      ],
+      "properties": {
+        "vote_id": {
+          "type": "string"
+        },
+        "agent_id": {
+          "type": "string"
+        },
+        "correctness": {
+          "type": "number"
+        },
+        "relevance": {
+          "type": "number"
+        },
+        "safety": {
+          "type": "number"
+        },
+        "coherence": {
+          "type": "number"
+        },
+        "empathy": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "approve": {
+          "type": "boolean"
+        },
+        "suggested_changes": {
+          "type": "string"
+        },
+        "explain": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    /* -------------------------------------------------
+       5.  REFLECTIVE LOG ENTRY
+    ---------------------------------------------------*/
+    "ReflectiveLogEntry": {
+      "type": "object",
+      "required": [
+        "log_id",
+        "timestamp",
+        "percept",
+        "router_decision",
+        "council_votes",
+        "final_output"
+      ],
+      "properties": {
+        "log_id": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "percept": {
+          "$ref": "#/definitions/Percept"
+        },
+        "router_decision": {
+          "$ref": "#/definitions/ExtendedRouterDecision"
+        },
+        "council_votes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CouncilVote"
+          }
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ClaimExtraction"
+          }
+        },
+        "evidence_items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EvidenceObject"
+          }
+        },
+        "memory_reads": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "memory_writes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "brainstate_before": {
+          "$ref": "#/definitions/BrainState"
+        },
+        "brainstate_after": {
+          "$ref": "#/definitions/BrainState"
+        },
+        "final_output": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "speculative": {
+              "type": "boolean"
+            }
+          }
+        },
+        "random_seed": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        },
+        "model_versions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ExtendedErrorEvent"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    /* -------------------------------------------------
+       6.  BRAINSTATE
+    ---------------------------------------------------*/
+    "BrainState": {
+      "type": "object",
+      "properties": {
+        "goals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "attention_gain": {
+          "type": "number"
+        },
+        "explore_bias": {
+          "type": "number"
+        },
+        "reward_signal": {
+          "type": "number"
+        },
+        "resource_load": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "number"
+            },
+            "gpu": {
+              "type": "number"
+            },
+            "memory": {
+              "type": "number"
+            }
+          }
+        },
+        "last_error": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/ExtendedErrorEvent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    /* -------------------------------------------------
+       7.  SELF MODEL
+    ---------------------------------------------------*/
+    "SelfModel": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "string"
+        },
+        "modules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ExtendedModuleDescriptor"
+          }
+        },
+        "health": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    /* -------------------------------------------------
+       8.  CLAIM EXTRACTION (NEW)
+    ---------------------------------------------------*/
+    "ClaimExtraction": {
+      "type": "object",
+      "required": [
+        "claim_id",
+        "percept_id",
+        "text",
+        "claim_type",
+        "extracted_at",
+        "source"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string"
+        },
+        "percept_id": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "claim_type": {
+          "type": "string"
+        },
+        "clauses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "clause_id": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "confidence": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "source_type": {
+              "type": "string"
+            },
+            "source_id": {
+              "type": "string"
+            },
+            "model_version": {
+              "type": "string"
+            },
+            "random_seed": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          }
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "verification_status": {
+          "type": "string"
+        },
+        "extracted_by": {
+          "type": "string"
+        },
+        "extracted_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": false
+    },
+    /* -------------------------------------------------
+       9.  EVIDENCE OBJECT (NEW)
+    ---------------------------------------------------*/
+    "EvidenceObject": {
+      "type": "object",
+      "required": [
+        "evidence_id",
+        "type",
+        "content",
+        "source",
+        "created_at",
+        "provenance"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            },
+            "structured": {
+              "type": [
+                "object",
+                "null"
+              ]
+            }
+          }
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "origin": {
+              "type": "string"
+            },
+            "reference": {
+              "type": "string"
+            },
+            "fetch_seed": {
+              "type": [
+                "string",
+                "integer"
+              ]
+            }
+          }
+        },
+        "verifier": {
+          "type": "object",
+          "properties": {
+            "verified_by": {
+              "type": "string"
+            },
+            "verified_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "verification_method": {
+              "type": "string"
+            },
+            "verification_confidence": {
+              "type": "number"
+            }
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "provenance": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "step": {
+                "type": "string"
+              },
+              "actor": {
+                "type": "string"
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "note": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "raw_payload": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    /* -------------------------------------------------
+       10. ROUTER DECISION (NEW, EXTENDED)
+    ---------------------------------------------------*/
+    "ExtendedRouterDecision": {
+      "type": "object",
+      "required": [
+        "decision_id",
+        "percept_id",
+        "selected_agents",
+        "depth_level",
+        "memory_strategy",
+        "created_at"
+      ],
+      "properties": {
+        "decision_id": {
+          "type": "string"
+        },
+        "percept_id": {
+          "type": "string"
+        },
+        "selected_agents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "agent_id": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              },
+              "budget_tokens": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "qcp_snapshot": {
+          "type": "object"
+        },
+        "router_features_used": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "depth_level": {
+          "type": "integer"
+        },
+        "memory_strategy": {
+          "type": "string"
+        },
+        "memory_routing_decision": {
+          "type": "object"
+        },
+        "budget": {
+          "type": "object",
+          "properties": {
+            "token_budget": {
+              "type": "integer"
+            },
+            "time_budget_ms": {
+              "type": "integer"
+            },
+            "cost_estimate": {
+              "type": "number"
+            }
+          }
+        },
+        "brainstate_snapshot": {
+          "type": "object"
+        },
+        "fallback_policy": {
+          "type": "string"
+        },
+        "explain": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "created_by": {
+          "type": "string"
+        },
+        "random_seed": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    /* -------------------------------------------------
+       11. ERROR EVENT (NEW)
+    ---------------------------------------------------*/
+    "ExtendedErrorEvent": {
+      "type": "object",
+      "required": [
+        "error_id",
+        "context_id",
+        "timestamp",
+        "severity",
+        "message",
+        "origin"
+      ],
+      "properties": {
+        "error_id": {
+          "type": "string"
+        },
+        "context_id": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "severity": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "object",
+          "properties": {
+            "module_id": {
+              "type": "string"
+            },
+            "agent_id": {
+              "type": "string"
+            },
+            "module_version": {
+              "type": "string"
+            }
+          }
+        },
+        "stack_summary": {
+          "type": "string"
+        },
+        "deterministic_seed_snapshot": {
+          "type": [
+            "string",
+            "integer",
+            "null"
+          ]
+        },
+        "recovery_action": {
+          "type": "string"
+        },
+        "retries": {
+          "type": "integer"
+        },
+        "associated_votes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    /* -------------------------------------------------
+       12. MODULE DESCRIPTOR (NEW)
+    ---------------------------------------------------*/
+    "ExtendedModuleDescriptor": {
+      "type": "object",
+      "required": [
+        "module_id",
+        "name",
+        "version",
+        "interfaces",
+        "resource_cost",
+        "status"
+      ],
+      "properties": {
+        "module_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "interfaces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resource_cost": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "number"
+            },
+            "gpu": {
+              "type": "string"
+            },
+            "ram_mb": {
+              "type": "integer"
+            },
+            "disk_mb": {
+              "type": "integer"
+            },
+            "network_mbps": {
+              "type": "integer"
+            }
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "last_failure": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "health_metrics": {
+          "type": "object"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "cost_per_hour": {
+          "type": "number"
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "source_repo": {
+              "type": "string"
+            },
+            "commit_hash": {
+              "type": "string"
+            },
+            "build_id": {
+              "type": "string"
+            }
+          }
+        },
+        "canary_config": {
+          "type": "object",
+          "properties": {
+            "canary_enabled": {
+              "type": "boolean"
+            },
+            "traffic_percent": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

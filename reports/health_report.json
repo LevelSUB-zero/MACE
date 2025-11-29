@@ -1,0 +1,18 @@
+{
+  "run_id": "health-1764417415",
+  "timestamp": 1764417415.5063243,
+  "summary": {
+    "overall_status": "PASS",
+    "total_tests": 24,
+    "passed": 24,
+    "failed": 0,
+    "errors": 0
+  },
+  "failures": [],
+  "artifacts": {
+    "reports": [
+      "reports/health_report.json"
+    ],
+    "metrics": "metrics/metrics.json"
+  }
+}
