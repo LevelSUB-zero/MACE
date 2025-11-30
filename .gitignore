@@ -19,5 +19,5 @@ dist/
 build/
 *.egg-info/
 check_step_*.py
-*.txt
+
 *.log
