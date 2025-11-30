@@ -1,0 +1,95 @@
+{
+  "type": "object",
+  "required": [
+    "log_id",
+    "timestamp",
+    "percept",
+    "router_decision",
+    "council_votes",
+    "final_output"
+  ],
+  "properties": {
+    "log_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "percept": {
+      "$ref": "#/definitions/Percept"
+    },
+    "router_decision": {
+      "$ref": "#/definitions/ExtendedRouterDecision"
+    },
+    "council_votes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CouncilVote"
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ClaimExtraction"
+      }
+    },
+    "evidence_items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/EvidenceObject"
+      }
+    },
+    "memory_reads": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "memory_writes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "brainstate_before": {
+      "$ref": "#/definitions/BrainState"
+    },
+    "brainstate_after": {
+      "$ref": "#/definitions/BrainState"
+    },
+    "final_output": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "speculative": {
+          "type": "boolean"
+        }
+      }
+    },
+    "random_seed": {
+      "type": [
+        "string",
+        "integer"
+      ]
+    },
+    "model_versions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ExtendedErrorEvent"
+      }
+    }
+  },
+  "additionalProperties": false
+}

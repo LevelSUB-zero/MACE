@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "required": [
+    "vote_id",
+    "agent_id",
+    "correctness",
+    "relevance",
+    "safety",
+    "coherence",
+    "approve"
+  ],
+  "properties": {
+    "vote_id": {
+      "type": "string"
+    },
+    "agent_id": {
+      "type": "string"
+    },
+    "correctness": {
+      "type": "number"
+    },
+    "relevance": {
+      "type": "number"
+    },
+    "safety": {
+      "type": "number"
+    },
+    "coherence": {
+      "type": "number"
+    },
+    "empathy": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "approve": {
+      "type": "boolean"
+    },
+    "suggested_changes": {
+      "type": "string"
+    },
+    "explain": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

@@ -113,7 +113,7 @@ def create_error_event(context_id, message, origin, severity="error"):
     }
 
 def create_reflective_log_entry(percept, router_decision, council_votes, final_output, 
-                                brainstate_before, brainstate_after, 
+                                brainstate_before, brainstate_after, agent_outputs,
                                 claims=None, evidence_items=None, 
                                 memory_reads=None, memory_writes=None, errors=None):
     """
@@ -127,6 +127,7 @@ def create_reflective_log_entry(percept, router_decision, council_votes, final_o
         "timestamp": ts,
         "percept": percept,
         "router_decision": router_decision,
+        "agent_outputs": agent_outputs,
         "council_votes": council_votes,
         "claims": claims if claims else [],
         "evidence_items": evidence_items if evidence_items else [],
@@ -156,3 +157,79 @@ def create_brainstate(goals=None):
         },
         "last_error": None
     }
+
+import json
+
+MAX_EVIDENCE_SIZE = 16 * 1024 # 16KB
+
+def create_evidence_object(evidence_id, type_str, content, source, verifier=None, 
+                           summary="", confidence=1.0, created_at=None, 
+                           provenance=None, raw_payload=None):
+    """
+    Constructs an EvidenceObject.
+    """
+    return {
+        "evidence_id": evidence_id,
+        "type": type_str,
+        "content": content, # {text, structured}
+        "source": source, # {origin, reference, fetch_seed}
+        "verifier": verifier, # {verified_by, ...} or None
+        "summary": summary,
+        "confidence": confidence,
+        "created_at": created_at,
+        "provenance": provenance if provenance else [],
+        "raw_payload": raw_payload
+    }
+
+from mace.core import artifact_store
+
+def create_sem_snapshot_evidence(key, value, read_seed):
+    """
+    Creates an EvidenceObject for a SEM read snapshot.
+    """
+    evidence_counter = deterministic.increment_counter("evidence")
+    evidence_id = deterministic.deterministic_id("evidence", key, evidence_counter)
+    created_at = deterministic.deterministic_timestamp(evidence_counter)
+    
+    val_str = json.dumps(value)
+    size = len(val_str.encode('utf-8'))
+    
+    raw_payload = val_str
+    provenance = []
+    
+    if size > MAX_EVIDENCE_SIZE:
+        # Save artifact
+        artifact_url = artifact_store.save_artifact(val_str)
+        
+        raw_payload = None
+        provenance.append({
+            "step": "size_check",
+            "actor": "system",
+            "timestamp": created_at,
+            "note": f"Payload redacted due to size limit ({size} > {MAX_EVIDENCE_SIZE})",
+            "artifact_url": artifact_url
+        })
+        
+    content = {
+        "text": val_str if size <= MAX_EVIDENCE_SIZE else f"<Redacted: {size} bytes>",
+        "structured": value if isinstance(value, (dict, list)) and size <= MAX_EVIDENCE_SIZE else None
+    }
+    
+    source = {
+        "origin": "sem",
+        "reference": key,
+        "fetch_seed": str(read_seed)
+    }
+    
+    return create_evidence_object(
+        evidence_id=evidence_id,
+        type_str="sem_read_snapshot",
+        content=content,
+        source=source,
+        verifier=None,
+        summary=f"snapshot of sem key {key}",
+        confidence=1.0,
+        created_at=created_at,
+        provenance=provenance,
+        raw_payload=raw_payload
+    )

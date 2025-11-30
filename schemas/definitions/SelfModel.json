@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "identity": {
+      "type": "string"
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ExtendedModuleDescriptor"
+      }
+    },
+    "health": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

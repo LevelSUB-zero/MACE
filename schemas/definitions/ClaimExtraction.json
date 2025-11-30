@@ -1,0 +1,82 @@
+{
+  "type": "object",
+  "required": [
+    "claim_id",
+    "percept_id",
+    "text",
+    "claim_type",
+    "extracted_at",
+    "source"
+  ],
+  "properties": {
+    "claim_id": {
+      "type": "string"
+    },
+    "percept_id": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "claim_type": {
+      "type": "string"
+    },
+    "clauses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "clause_id": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "source_type": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        },
+        "model_version": {
+          "type": "string"
+        },
+        "random_seed": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        }
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "verification_status": {
+      "type": "string"
+    },
+    "extracted_by": {
+      "type": "string"
+    },
+    "extracted_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

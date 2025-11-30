@@ -1,0 +1,109 @@
+{
+  "type": "object",
+  "required": [
+    "evidence_id",
+    "type",
+    "content",
+    "source",
+    "created_at",
+    "provenance"
+  ],
+  "properties": {
+    "evidence_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "structured": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "origin": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "fetch_seed": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        }
+      }
+    },
+    "verifier": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "verified_by": {
+          "type": "string"
+        },
+        "verified_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verification_method": {
+          "type": "string"
+        },
+        "verification_confidence": {
+          "type": "number"
+        }
+      }
+    },
+    "summary": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "number"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "string"
+          },
+          "actor": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "raw_payload": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

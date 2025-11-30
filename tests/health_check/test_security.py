@@ -37,7 +37,7 @@ class TestSecurity(unittest.TestCase):
             res = semantic.put_sem(key, {"val": 1})
             # put_sem catches exceptions and returns {"success": False, "error": ...}
             self.assertFalse(res["success"], f"Should fail for key: {key}")
-            self.assertIn("Invalid canonical key format", res["error"])
+            self.assertIn("INVALID_KEY_FORMAT", res["error"])
             
         print("\nPASS: Canonical key injection")
 

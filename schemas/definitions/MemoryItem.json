@@ -1,0 +1,109 @@
+{
+  "type": "object",
+  "required": [
+    "memory_id",
+    "memory_type",
+    "content",
+    "priority"
+  ],
+  "properties": {
+    "memory_id": {
+      "type": "string"
+    },
+    "memory_type": {
+      "type": "string",
+      "enum": [
+        "episodic",
+        "semantic",
+        "cwm",
+        "wm"
+      ]
+    },
+    "canonical_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "structured": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "embedding": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "priority": {
+      "type": "object",
+      "properties": {
+        "recency": {
+          "type": "number"
+        },
+        "frequency": {
+          "type": "number"
+        },
+        "relevance": {
+          "type": "number"
+        },
+        "novelty": {
+          "type": "number"
+        },
+        "trust": {
+          "type": "number"
+        }
+      }
+    },
+    "episodic_specific": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "semantic_specific": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "provenance": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "cwm_specific": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "working_specific": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

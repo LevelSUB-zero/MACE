@@ -41,7 +41,15 @@ class TestReplay(unittest.TestCase):
         
         self.assertIn("red", res["text"])
         self.assertTrue(len(log_entry["memory_reads"]) > 0)
-        self.assertEqual(log_entry["memory_reads"]["user/profile/user_123/favorite_color"], "red")
+        # Check evidence for value
+        found_val = None
+        for ev in log_entry["evidence_items"]:
+            if ev["type"] == "sem_read_snapshot" and ev["source"]["reference"] == "user/profile/user_123/favorite_color":
+                found_val = ev["content"]["structured"]
+                if found_val is None and ev["content"]["text"]:
+                     found_val = json.loads(ev["content"]["text"])
+                break
+        self.assertEqual(found_val, "red")
         
         # 3. Clear DB
         if os.path.exists("mace_memory.db"):
@@ -67,8 +75,18 @@ class TestReplay(unittest.TestCase):
         # 3. Corrupt Log Snapshot
         # Change "blue" to "green" in the snapshot
         key = "user/profile/user_123/favorite_color"
-        # Value is stored directly, not wrapped in {"value": ...}
-        log_entry["memory_reads"][key] = "green"
+        
+        # Find the evidence item for this key
+        found = False
+        for ev in log_entry["evidence_items"]:
+            if ev["type"] == "sem_read_snapshot" and ev["source"]["reference"] == key:
+                ev["content"]["structured"] = "green"
+                ev["content"]["text"] = "green" # Update text too just in case
+                found = True
+                break
+                
+        if not found:
+            self.fail("Could not find snapshot evidence to corrupt")
         
         # 4. Replay
         # Replay will use "green" from snapshot.
@@ -79,10 +97,10 @@ class TestReplay(unittest.TestCase):
         # Mismatch!
         
         print("\nRunning Replay 6.2 (Corrupt)...")
-        with self.assertRaises(RuntimeError) as cm:
-            replay.replay_log(log_entry)
-            
-        self.assertIn("REPLAY_MISMATCH", str(cm.exception))
+        print("\nRunning Replay 6.2 (Corrupt)...")
+        res = replay.replay_log(log_entry)
+        self.assertFalse(res["success"])
+        self.assertIn("OUTPUT_MISMATCH", res["error"])
         print("PASS: Replay 6.2 detected corruption")
 
 if __name__ == "__main__":

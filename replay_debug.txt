@@ -1,3 +1,0 @@
-Field 'final_output' mismatch:
-Original: {'text': 'blue', 'confidence': 1.0, 'speculative': False}
-Replay:   {'text': 'green', 'confidence': 1.0, 'speculative': False}

@@ -28,7 +28,12 @@ def init_seed(seed):
     
     # Reset counters
     # We must reset ALL counters, including dynamic ones like percept_time
-    _counters = {}
+    _counters = {
+        "id": 0,
+        "sem_write": 0,
+        "evidence": 0,
+        "log": 0
+    }
     
     # If in deterministic mode, seed Python's random too (optional but good for safety)
     if _mode == "DETERMINISTIC":
@@ -73,9 +78,6 @@ def deterministic_timestamp(counter=None):
         
     if counter is None:
         # In deterministic mode, we must have a counter to derive time
-        # For safety, we can default to a global time counter if not provided, 
-        # but explicit is better. Let's use a dedicated time counter if needed.
-        # For now, raise strict error as per spec.
         raise ValueError("Counter required for deterministic_timestamp in DETERMINISTIC mode.")
 
     # Derive a time offset from the hash of seed + counter
@@ -94,3 +96,34 @@ def deterministic_timestamp(counter=None):
     derived_time = base_time + datetime.timedelta(seconds=offset_seconds)
     
     return derived_time.isoformat()
+
+def deterministic_id(namespace, payload, counter=None):
+    """
+    Generate a deterministic ID using HMAC-SHA256.
+    
+    Format: hex digest of HMAC(seed, namespace || payload || counter)
+    
+    Args:
+        namespace (str): The scope of the ID (e.g., "percept", "vote").
+        payload (str): The content to hash (e.g., text, agent_id).
+        counter (int, optional): A counter to ensure uniqueness. 
+                                 If None, uses global ID counter.
+    """
+    seed = get_seed()
+    if seed is None:
+        if get_mode() == "NORMAL":
+             seed = "default_unsafe_seed"
+        else:
+             raise RuntimeError("Seed not initialized for deterministic_id.")
+
+    if counter is None:
+        counter = increment_counter("id")
+
+    # Construct message
+    # Separator ':' used as delimiter
+    message = f"{namespace}:{payload}:{counter}".encode('utf-8')
+    key = seed.encode('utf-8')
+    
+    # HMAC
+    h = hmac.new(key, message, hashlib.sha256)
+    return h.hexdigest()

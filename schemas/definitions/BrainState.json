@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "properties": {
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "attention_gain": {
+      "type": "number"
+    },
+    "explore_bias": {
+      "type": "number"
+    },
+    "reward_signal": {
+      "type": "number"
+    },
+    "resource_load": {
+      "type": "object",
+      "properties": {
+        "cpu": {
+          "type": "number"
+        },
+        "gpu": {
+          "type": "number"
+        },
+        "memory": {
+          "type": "number"
+        }
+      }
+    },
+    "last_error": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ExtendedErrorEvent"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

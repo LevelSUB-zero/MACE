@@ -1,0 +1,66 @@
+{
+  "type": "object",
+  "required": [
+    "error_id",
+    "context_id",
+    "timestamp",
+    "severity",
+    "message",
+    "origin"
+  ],
+  "properties": {
+    "error_id": {
+      "type": "string"
+    },
+    "context_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "severity": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "origin": {
+      "type": "object",
+      "properties": {
+        "module_id": {
+          "type": "string"
+        },
+        "agent_id": {
+          "type": "string"
+        },
+        "module_version": {
+          "type": "string"
+        }
+      }
+    },
+    "stack_summary": {
+      "type": "string"
+    },
+    "deterministic_seed_snapshot": {
+      "type": [
+        "string",
+        "integer",
+        "null"
+      ]
+    },
+    "recovery_action": {
+      "type": "string"
+    },
+    "retries": {
+      "type": "integer"
+    },
+    "associated_votes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -12,6 +12,11 @@ def run(percept):
         # In production, use a proper parser.
         # Regex was: ^\s*\d+\s*([+\-*/^])\s*\d+\s*$
         # Replace ^ with ** for python
+        # Strict regex validation per spec
+        import re
+        if not re.match(r"^\s*\d+\s*[\+\-\*\/\^]\s*\d+\s*$", text):
+            raise ValueError("Invalid math expression format")
+            
         expr = text.replace("^", "**")
         result = eval(expr)
         

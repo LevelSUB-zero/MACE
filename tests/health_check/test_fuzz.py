@@ -33,7 +33,9 @@ class TestFuzz(unittest.TestCase):
                 res, log_entry = executor.execute(query, seed=seed, log_enabled=False)
                 
                 # Replay
-                replay.replay_log(log_entry)
+                res_replay = replay.replay_log(log_entry)
+                if not res_replay["success"]:
+                    raise RuntimeError(f"Replay failed: {res_replay['error']} Details: {res_replay.get('details')}")
                 
             except Exception as e:
                 print(f"FAIL: Seed {seed}, Query '{query}' -> {e}")

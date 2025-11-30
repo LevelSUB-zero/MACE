@@ -1,0 +1,91 @@
+{
+  "type": "object",
+  "required": [
+    "decision_id",
+    "percept_id",
+    "selected_agents",
+    "depth_level",
+    "memory_strategy",
+    "created_at"
+  ],
+  "properties": {
+    "decision_id": {
+      "type": "string"
+    },
+    "percept_id": {
+      "type": "string"
+    },
+    "selected_agents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "budget_tokens": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "qcp_snapshot": {
+      "type": "object"
+    },
+    "router_features_used": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "depth_level": {
+      "type": "integer"
+    },
+    "memory_strategy": {
+      "type": "string"
+    },
+    "memory_routing_decision": {
+      "type": "object"
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "token_budget": {
+          "type": "integer"
+        },
+        "time_budget_ms": {
+          "type": "integer"
+        },
+        "cost_estimate": {
+          "type": "number"
+        }
+      }
+    },
+    "brainstate_snapshot": {
+      "type": "object"
+    },
+    "fallback_policy": {
+      "type": "string"
+    },
+    "explain": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "random_seed": {
+      "type": [
+        "string",
+        "integer"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

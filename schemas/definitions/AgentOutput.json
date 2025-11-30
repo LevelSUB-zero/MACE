@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "required": [
+    "agent_id",
+    "text",
+    "confidence",
+    "reasoning_trace"
+  ],
+  "properties": {
+    "agent_id": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "number"
+    },
+    "reasoning_trace": {
+      "type": "string"
+    },
+    "raw_output": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": false
+}
