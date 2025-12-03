@@ -1,0 +1,14 @@
+# Default quotas from spec
+max_evidence_size_bytes: 16384
+max_log_entry_size_bytes: 1048576
+max_steps_per_request: 50
+max_tokens_per_request: 8192
+max_wm_items: 7
+max_cwm_items: 20
+apt_penalty_timeout_seconds: 300
+
+# Stage-1 additions
+wm_capacity: 7
+wm_ttl_ticks: 10
+attention_decay: 0.9
+default_token_budget: 1000

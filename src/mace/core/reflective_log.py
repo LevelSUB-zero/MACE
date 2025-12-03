@@ -1,6 +1,7 @@
 import json
 import hmac
 import hashlib
+from mace.core import deterministic
 
 def canonical_serialize(obj):
     """
@@ -60,3 +61,25 @@ def append_log(entry):
     os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
     with open(LOG_FILE, "a") as f:
         f.write(json.dumps(entry) + "\n")
+
+AMENDMENT_FILE = "logs/amendments.jsonl"
+
+def amend_log(log_id, new_entry, reason):
+    """
+    Record an amendment to a log entry.
+    Does NOT modify the original log file (Immutability).
+    Writes to amendments.jsonl.
+    """
+    amendment_record = {
+        "original_log_id": log_id,
+        "new_entry": new_entry,
+        "reason": reason,
+        "timestamp": deterministic.deterministic_timestamp(deterministic.increment_counter("amendment_time")),
+        "amendment_id": deterministic.deterministic_id("amendment", log_id)
+    }
+    
+    os.makedirs(os.path.dirname(AMENDMENT_FILE), exist_ok=True)
+    with open(AMENDMENT_FILE, "a") as f:
+        f.write(json.dumps(amendment_record) + "\n")
+        
+    return {"success": True, "amendment_id": amendment_record["amendment_id"]}

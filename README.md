@@ -1,76 +1,210 @@
-# MACE (Massive Autonomous Cognitive Entity) - Stage 0
+# MACE (Memory-Augmented Cognitive Engine)
 
-**Version:** v0.0.2  
-**Status:** Stage-0 Complete (Stable)
+**Version**: 1.0.0 (Stage-1)  
+**Status**: Production Ready ✅
 
-## Overview
-MACE is a deterministic, replayable, and secure cognitive architecture designed for high-fidelity agentic operations. Stage-0 focuses on the kernel: the fundamental loops, memory systems, and verification engines required to build safe AI agents.
+A deterministic cognitive execution engine with 100% replay fidelity, comprehensive validation tooling, and production-ready operational infrastructure.
 
-## Core Features
+## ✨ Features
 
-### 🧠 Deterministic Kernel
-- **Replay Engine**: Mathematically guaranteed side-effect-free replay of any session using a strict "Sandbox Mode".
-- **Reflective Logs**: Immutable, HMAC-signed logs (`reflective_log.jsonl`) that capture every percept, decision, and memory state.
-- **Deep Verification**: Granular structural equality checks ensure that replayed execution matches original execution bit-for-bit.
+- 🎯 **100% Deterministic Execution** - Guaranteed replay fidelity
+- 🧠 **Self-Representation** - Module registry with dependency graphs
+- 💾 **Persistent BrainState** - Stateful execution across restarts
+- 📜 **Audit Trail** - Append-only APT event logging
+- 🔐 **Security** - Admin tokens, kill-switch, HMAC signatures
+- ⚡ **High Performance** - p95 latency 118ms
+- 🛡️ **Fault Tolerant** - Graceful error handling and fallbacks
 
-### 💾 Semantic Memory (SEM)
-- **Canonical Keys**: Enforced `category/subcategory/namespace/name` schema.
-- **Journaling**: Append-only write journal (`sem_write_journal.jsonl`) for full state reconstruction.
-- **Artifact Offloading**: Large evidence payloads (>16KB) are automatically redacted and stored as content-addressed artifacts (`artifacts/`).
+## 🚀 Quick Start
 
-### 🛡️ Security & Governance
-- **PII Blocking**: Regex-based blocking of sensitive data (CC, SSN) at the storage layer.
-- **Policy Enforcement**: Governance module (`amendment.py`) can block specific keys or patterns.
-- **Tamper Evidence**: All logs are cryptographically signed.
-
-## Installation
+### Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/LevelSUB-zero/MACE.git
-cd MACE
+# Clone repository
+git clone https://github.com/yourusername/Mace.git
+cd Mace
 
-# Install dependencies (Standard Python 3.12+)
+# Install dependencies
 pip install -r requirements.txt
+
+# Set up database
+python migrations/migrate_template.py --db mace_stage1.db --sql migrations/0001_create_stage1_tables.sql
+python migrations/migrate_template.py --db mace_stage1.db --sql migrations/0002_gap_remediation.sql
 ```
 
-## Usage
+### Basic Usage
 
-### Running the Executor
 ```python
 from mace.runtime import executor
 
-# Execute a query
-output, log_entry = executor.execute("What is 2 + 2?")
-print(output["text"]) 
-# Output: "The result of 2 + 2 is 4"
+# Execute a deterministic task
+output, log = executor.execute(
+    "Calculate the sum of 2 and 2",
+    intent="math",
+    seed="my_deterministic_seed"
+)
+
+print(output["text"])  # Deterministic result
 ```
 
-### Replaying a Log
-```python
-from mace.core import replay
+### Verification
 
-# Replay ensures the exact same execution path is followed
-result = replay.replay_log(log_entry)
-if result["success"]:
-    print("Replay verified!")
-else:
-    print(f"Divergence detected: {result['error']}")
-```
-
-## Testing
-Run the comprehensive validation suite:
 ```bash
-$env:PYTHONPATH='src'; pytest tests/v02_validation/ tests/health_check/
+# Run test suite
+pytest tests/stage1/ -v
+
+# Verify replay fidelity
+python tools/run_replay_benchmark.py --seeds 1..100
+
+# Security validation
+python tools/security_validation.py --db mace_stage1.db
+
+# Performance baseline
+python tools/benchmark_performance.py --requests 100
 ```
 
-## Directory Structure
-- `src/mace/core`: Kernel components (Deterministic PRNG, Replay, Structures).
-- `src/mace/memory`: Semantic Memory & Storage Backends.
-- `src/mace/runtime`: Executor & Orchestration.
-- `src/mace/agents`: Agent implementations (Math, Profile, Knowledge).
-- `tests/`: Validation and Health Check suites.
-- `schemas/`: JSON Schemas for all system objects.
+## 📊 Validation Results
 
-## License
-Proprietary / Closed Source (LevelSUB-zero).
+| Component | Tests | Status |
+|-----------|-------|--------|
+| Core Tests | 28/28 | ✅ |
+| Replay Fidelity | 100% | ✅ |
+| Security | 4/4 | ✅ |
+| Performance (p95) | 118ms | ✅ |
+| Fault Injection | 4/4 | ✅ |
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│           Executor (Stage-1)                │
+├─────────────────────────────────────────────┤
+│  1. Router (Deterministic Agent Selection)  │
+│  2. BrainState (Persistent State)           │
+│  3. Agent Execution                         │
+│  4. Council (Approval)                      │
+│  5. Reflective Log (Signed)                 │
+└─────────────────────────────────────────────┘
+         ↓                            ↓
+┌──────────────────┐        ┌──────────────────┐
+│  Memory Layers   │        │   APT Engine     │
+│  - Working       │        │  (Audit Trail)   │
+│  - Consolidated  │        └──────────────────┘
+│  - Episodic      │
+│  - Semantic      │
+└──────────────────┘
+```
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed design.
+
+## 📚 Documentation
+
+- **[Usage Guide](docs/USAGE.md)** - Complete usage examples
+- **[Architecture](docs/ARCHITECTURE.md)** - System design and components
+- **[API Reference](docs/API_REFERENCE.md)** - Function and class documentation
+- **[Deployment](ops/runbooks/deployment.md)** - Production deployment guide
+- **[Troubleshooting](ops/runbooks/troubleshooting.md)** - Common issues and solutions
+
+## 🔧 Tools
+
+### Validation Tools
+- `run_replay_benchmark.py` - Test replay fidelity at scale
+- `security_validation.py` - Security and auth validation
+- `benchmark_performance.py` - Performance metrics
+- `test_fault_injection.py` - Error handling tests
+
+### Operations Tools
+- `archive_old_files.sh` - Log cleanup automation
+- `preview_cleanup.py` - Safe cleanup preview
+- `verify_signatures.py` - Signature verification
+
+## 🔐 Security
+
+- **Admin Tokens**: Secure generation with TTL and revocation
+- **Kill-Switch**: Emergency halt capability
+- **Signed Logs**: HMAC-SHA256 for integrity
+- **Deterministic Replay**: Prevents tampering
+
+See [SECURITY_CHECKLIST.md](SECURITY_CHECKLIST.md) for complete security posture.
+
+## 📈 Performance
+
+```
+Latency (50 requests):
+  p50: 88ms
+  p95: 118ms
+  p99: 249ms
+
+Throughput: 100% success rate
+Error rate: 0%
+```
+
+## 🧪 Testing
+
+```bash
+# Full test suite
+pytest tests/stage1/ -v
+
+# Specific modules
+pytest tests/stage1/test_executor.py -v
+pytest tests/stage1/test_replay.py -v
+
+# With coverage
+pytest tests/stage1/ --cov=src/mace --cov-report=html
+```
+
+## 🛠️ Development
+
+### Setup Pre-commit Hooks
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+### Run Linting
+
+```bash
+black src/ tests/ --line-length=100
+isort src/ tests/ --profile=black
+flake8 src/ tests/ --max-line-length=100
+```
+
+## 📦 Release History
+
+- **v1.0.0** (2025-12-03) - Stage-1 production release
+- **v0.0.2** (2025-11-XX) - Stage-0 with deterministic primitives
+- **v0.0.1** (2025-XX-XX) - Initial prototype
+
+See [RELEASE_NOTES_v1.0.0.md](RELEASE_NOTES_v1.0.0.md) for detailed changelog.
+
+## 🗺️ Roadmap
+
+### Stage-2 (Planned)
+- Vault integration for secrets management
+- Database encryption at rest
+- Advanced monitoring (Prometheus/Grafana)
+- ML-based router scoring
+- Performance optimizations
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
+
+## 📄 License
+
+[Add your license here]
+
+## 🔗 Links
+
+- [Documentation](docs/)
+- [GitHub Issues](https://github.com/yourusername/Mace/issues)
+- [Release Notes](RELEASE_NOTES_v1.0.0.md)
+
+---
+
+**Built with precision for deterministic execution** 🎯

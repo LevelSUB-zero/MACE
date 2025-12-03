@@ -1,0 +1,9 @@
+{
+    "snapshot_id": "bs_001",
+    "goals": [
+        "assist_user"
+    ],
+    "working_memory": [],
+    "attention_gain": 0.8,
+    "explore_bias": 0.2
+}

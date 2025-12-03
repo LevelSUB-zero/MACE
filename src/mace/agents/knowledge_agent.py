@@ -17,6 +17,6 @@ def run(percept):
     
     return structures.create_agent_output(
         agent_id="knowledge_agent",
-        text="I don’t have this information stored yet.",
+        text="I don’t have that information stored yet. If you want, tell me and I’ll remember it.",
         confidence=1.0
     )

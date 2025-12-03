@@ -58,7 +58,7 @@ class TestGoldenSuite(unittest.TestCase):
     def test_g4_fact(self):
         """G4: Fact (Not Found)"""
         output, log = executor.execute("What is the capital of France")
-        self.assertIn("I don’t have this information", output["text"])
+        self.assertIn("I don’t have that information stored yet", output["text"])
         self.assertEqual(log["router_decision"]["selected_agents"][0]["agent_id"], "knowledge_agent")
 
     # --- Failure Tests ---

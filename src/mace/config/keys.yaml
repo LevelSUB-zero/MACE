@@ -1,0 +1,4 @@
+# Placeholder for Vault key IDs
+# In production, these are injected or retrieved from Vault
+signing_key_id: "vault:mace-signing-key-v1"
+admin_audit_key_id: "vault:mace-admin-audit-key-v1"

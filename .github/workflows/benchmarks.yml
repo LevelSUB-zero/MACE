@@ -1,0 +1,93 @@
+name: Stage-1 Benchmarks
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ stage1/implement, main ]
+  push:
+    branches: [ stage1/implement ]
+
+jobs:
+  replay-fidelity:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run Replay Fidelity Benchmark
+        env:
+          PYTHONPATH: src
+        run: |
+          python tools/run_replay_benchmark.py --seeds 1..100 --out replay_results.jsonl
+      
+      - name: Analyze Results
+        run: |
+          python tools/analyze_replay_results.py replay_results.jsonl
+      
+      - name: Upload Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: replay-benchmark-results
+          path: replay_results.jsonl
+  
+  security-validation:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run Migrations
+        run: |
+          python migrations/migrate_template.py --db sqlite:///test.db --sql migrations/0001_create_stage1_tables.sql
+          python migrations/migrate_template.py --db sqlite:///test.db --sql migrations/0002_gap_remediation.sql
+      
+      - name: Run Security Validation
+        env:
+          PYTHONPATH: src
+          MACE_DB_URL: sqlite:///test.db
+        run: |
+          python tools/security_validation.py --db sqlite:///test.db
+  
+  full-test-suite:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+      
+      - name: Run Full Test Suite
+        env:
+          PYTHONPATH: src
+        run: |
+          pytest tests/stage1/ -v --tb=short

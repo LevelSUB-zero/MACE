@@ -119,11 +119,17 @@ def deterministic_id(namespace, payload, counter=None):
     if counter is None:
         counter = increment_counter("id")
 
-    # Construct message
-    # Separator ':' used as delimiter
-    message = f"{namespace}:{payload}:{counter}".encode('utf-8')
+    # Construct message using strict concatenation
+    message = _construct_id_message(namespace, payload, counter)
     key = seed.encode('utf-8')
     
     # HMAC
     h = hmac.new(key, message, hashlib.sha256)
     return h.hexdigest()
+
+def _construct_id_message(namespace, payload, counter):
+    """
+    Helper for strict string concatenation rules.
+    Format: namespace:payload:counter
+    """
+    return f"{namespace}:{payload}:{counter}".encode('utf-8')

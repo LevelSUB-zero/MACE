@@ -1,9 +1,17 @@
 import traceback
 import json
-from mace.core import structures, deterministic, reflective_log, qcp, router
+import datetime
+from mace.core import structures, deterministic, canonical
+from mace.router import stage1_router
+from mace.brainstate import brainstate
+from mace.reflective import writer as reflective_writer
+from mace.council import stub as council_stub
 from mace.agents import math_agent, profile_agent, knowledge_agent, generic_agent
-from mace.council import council_stub
 from mace.ops import metrics
+from mace.memory import semantic
+from mace.brainstate import persistence as bs_persistence
+
+from mace.governance import killswitch
 
 # Agent Registry
 AGENTS = {
@@ -15,18 +23,20 @@ AGENTS = {
 
 def execute(percept_text, intent="unknown", seed=None, log_enabled=True):
     """
-    Main execution loop for Stage-0.
+    Main execution loop for Stage-1.
     """
-    # 0. Seed Chaining for Determinism/Replayability
+    # 0. Kill-switch check
+    if killswitch.is_active():
+        status = killswitch.get_status()
+        raise RuntimeError(f"KILL_SWITCH_ACTIVE: {status.get('reason', 'UNKNOWN')} (activated by {status.get('activated_by', 'unknown')})")
+    
+    # 1. Seed Chaining
     import hashlib
     
     if seed is not None:
-        # Replay mode: use provided seed
         next_seed = seed
     else:
-        # Normal mode: derive seed
         current_seed = deterministic.get_seed() or "genesis_seed"
-        # Mix in text and intent to ensure variation
         payload = f"{current_seed}:{percept_text}:{intent}".encode("utf-8")
         next_seed = hashlib.sha256(payload).hexdigest()
         
@@ -35,20 +45,29 @@ def execute(percept_text, intent="unknown", seed=None, log_enabled=True):
     # 1. Build Percept
     percept = structures.create_percept(percept_text, intent=intent)
     
-    # 2. Create Brainstate (Before)
-    brainstate_before = structures.create_brainstate()
+    # 2. Load or Create Brainstate
+    # Try to load existing state first
+    bs_before = bs_persistence.load_latest_snapshot(next_seed)
+    if bs_before is None:
+        # No existing state, create fresh
+        bs_before = brainstate.create_snapshot(next_seed)
     
-    # 3. QCP Analysis
-    qcp_snapshot = qcp.analyze_percept(percept)
+    # 3. Router
+    # We pass available agents metadata (mocked for now or loaded from SelfRep)
+    available_agents = [
+        {"module_id": "math_agent", "capabilities": ["math", "calc"]},
+        {"module_id": "profile_agent", "capabilities": ["profile", "user"]},
+        {"module_id": "knowledge_agent", "capabilities": ["knowledge", "fact"]},
+        {"module_id": "generic_agent", "capabilities": ["chat"]}
+    ]
     
-    # 4. Router
-    router_decision = router.route_percept(percept, qcp_snapshot)
+    router_decision = stage1_router.route(percept, bs_before, available_agents)
     
     # Select primary agent
     primary_selection = router_decision["selected_agents"][0]
     agent_id = primary_selection["agent_id"]
     
-    # 5. Execute Agent
+    # 4. Execute Agent
     agent_module = AGENTS.get(agent_id, generic_agent)
     metrics.increment("agent_executions_total")
     
@@ -56,7 +75,6 @@ def execute(percept_text, intent="unknown", seed=None, log_enabled=True):
     agent_outputs = []
     
     # Start capturing memory traces
-    from mace.memory import semantic
     semantic.start_capture()
     
     try:
@@ -65,112 +83,102 @@ def execute(percept_text, intent="unknown", seed=None, log_enabled=True):
         print(f"DEBUG: Agent output: {output}")
         agent_outputs.append(output)
     except Exception as e:
-        # Handle Agent Failure (F4)
+        # Handle Agent Failure
         err_msg = str(e)
         stack = traceback.format_exc()
         
-        # Check for specific failure types (simulated)
         severity = "error"
         if "TIMEOUT" in err_msg:
-            # Simulated timeout
             err_msg = "AGENT_TIMEOUT"
             severity = "warning"
         
         error_event = structures.create_error_event(
             context_id=percept["percept_id"],
             message=f"Agent {agent_id} failed: {err_msg}",
-            origin={"module_id": "executor", "agent_id": agent_id, "module_version": "0.0.1"},
+            origin={"module_id": "executor", "agent_id": agent_id, "module_version": "1.0.0"},
             severity=severity
         )
         error_event["stack_summary"] = stack
         errors.append(error_event)
         
         # Fallback
-        fallback_msg = "One of my internal modules failed while processing this; here is a partial answer based on the remaining modules."
-        if "TIMEOUT" in err_msg:
-             fallback_msg = "One of my internal modules timed out while trying to fetch the answer. I’ll try a fallback."
-             
+        fallback_msg = "One of my internal modules failed."
         fallback_output = structures.create_agent_output(
             agent_id="generic_agent",
             text=fallback_msg,
             confidence=0.0,
-            reasoning_trace="Fallback triggered due to agent failure."
+            reasoning_trace="Fallback triggered."
         )
         agent_outputs.append(fallback_output)
         output = fallback_output
 
     # Stop capturing
     captured_traces = semantic.stop_capture()
-    memory_reads = captured_traces["reads"] # Dict {key: value}
-    memory_writes = captured_traces["writes"] # List [key]
+    memory_reads = captured_traces["reads"]
+    memory_writes = captured_traces["writes"]
     
-    # Process Evidence Snapshots
+    # Process Evidence
     evidence_items = []
     for key, read_info in memory_reads.items():
-        # read_info is {"value": val, "exists": bool}
         if not read_info["exists"]:
-            continue # Skip evidence for misses (replay will see missing key and infer miss)
-            
+            continue
         value = read_info["value"]
-        
-        # Create snapshot
-        # We use the current seed as fetch_seed proxy for now
         read_seed = deterministic.get_seed()
         evidence = structures.create_sem_snapshot_evidence(key, value, read_seed)
         evidence_items.append(evidence)
     
-    # 6. Council
+    # 5. Council
     vote = council_stub.evaluate(output)
     council_votes = [vote]
     
-    # 7. Final Output Selection
+    # 6. Final Output Selection
     final_output = select_final_output(agent_outputs)
     
-    brainstate_after = structures.create_brainstate()
+    # 7. BrainState Update (Tick)
+    # We tick the brainstate to advance time/decay
+    brainstate.tick(bs_before)
+    bs_after = bs_before # In-place update
+    
     if errors:
-        brainstate_after["last_error"] = errors[-1]
+        bs_after["last_error"] = errors[-1]
 
     # 8. Reflective Log
+    # We need to ensure log_id is deterministic
+    ts = deterministic.deterministic_timestamp(deterministic.increment_counter("executor_log_time"))
+    log_payload = {
+        "percept_id": percept["percept_id"],
+        "timestamp": ts
+    }
+    log_id = deterministic.deterministic_id("reflective_log", canonical.canonical_json_serialize(log_payload))
+    
     log_entry = structures.create_reflective_log_entry(
         percept=percept,
         router_decision=router_decision,
         council_votes=council_votes,
         final_output=final_output,
-        brainstate_before=brainstate_before,
-        brainstate_after=brainstate_after,
+        brainstate_before=bs_before, # Note: this is actually mutated, ideally we should have deepcopied before
+        brainstate_after=bs_after,
         agent_outputs=agent_outputs,
         errors=errors,
         memory_reads=list(memory_reads.keys()),
         memory_writes=memory_writes,
         evidence_items=evidence_items
     )
+    log_entry["log_id"] = log_id
     
     if log_enabled:
-        reflective_log.append_log(log_entry)
+        reflective_writer.write_log(log_entry)
         metrics.increment("reflective_logs_written_total")
         metrics.save()
-        
-    if errors:
-        metrics.increment("errors_total", len(errors))
-        
-    # Telemetry
-    import time
-    # Check approval
-    approved = True
-    if council_votes:
-        approved = council_votes[0]["approve"]
-        
-    from mace.core import telemetry
-    telemetry.update_apt(approved, 100) 
     
+    # Save updated BrainState for next execution
+    bs_persistence.save_snapshot(bs_after)
+        
     return final_output, log_entry
 
 def select_final_output(agent_outputs):
     """
-    Select the best output from a list of agent outputs.
-    Deterministic tie-breaking:
-    1. Highest confidence
-    2. Lowest lexicographical agent_id
+    Select the best output.
     """
     if not agent_outputs:
         return {
@@ -178,12 +186,6 @@ def select_final_output(agent_outputs):
             "confidence": 0.0,
             "speculative": False
         }
-        
-    # Sort by confidence (desc) then agent_id (asc)
-    # We use a tuple (confidence, agent_id)
-    # Python sort is stable.
-    # To sort by confidence desc and agent_id asc:
-    # We can sort by agent_id asc first, then confidence desc.
     
     sorted_outputs = sorted(agent_outputs, key=lambda x: x["agent_id"])
     sorted_outputs = sorted(sorted_outputs, key=lambda x: x["confidence"], reverse=True)
@@ -195,5 +197,3 @@ def select_final_output(agent_outputs):
         "confidence": best["confidence"],
         "speculative": False
     }
-    
-

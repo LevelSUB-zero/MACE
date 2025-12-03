@@ -1,0 +1,14 @@
+{
+    "nodes": [
+        {
+            "module_id": "profile_agent",
+            "version": "1.0.0",
+            "capabilities": [
+                "read_profile",
+                "write_profile"
+            ],
+            "status": "active"
+        }
+    ],
+    "edges": []
+}
