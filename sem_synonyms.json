@@ -1,5 +1,0 @@
-{
-  "my favorite color": "user/profile/user_id/favorite_color",
-  "my name": "user/profile/user_id/name",
-  "current time": "world/time/global/iso8601"
-}
