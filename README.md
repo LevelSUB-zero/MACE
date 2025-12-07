@@ -10,7 +10,7 @@ A deterministic cognitive execution engine with 100% replay fidelity, comprehens
 - 🎯 **100% Deterministic Execution** - Guaranteed replay fidelity
 - 🧠 **Self-Representation** - Module registry with dependency graphs
 - 💾 **Persistent BrainState** - Stateful execution across restarts
-- 📜 **Audit Trail** - Append-only APT event logging
+- 📜 **Performance Timeline** - Append-only APT event logging (Performance Event Timeline)
 - 🔐 **Security** - Admin tokens, kill-switch, HMAC signatures
 - ⚡ **High Performance** - p95 latency 118ms
 - 🛡️ **Fault Tolerant** - Graceful error handling and fallbacks

@@ -18,7 +18,7 @@ MACE Stage-1 delivers a **fully deterministic cognitive execution engine** with 
 ### Core Modules
 - **Self-Representation**: Module registry with graph snapshots and edges
 - **BrainState**: Tick-based state management with persistence
-- **APT Engine**: Append-only audit trail with event replay
+- **APT Engine**: Append-only performance event timeline with event replay
 - **Memory Hierarchy**: Working Memory → Consolidated → Episodic → Semantic
 - **Router**: Deterministic agent selection with tie-breaking
 - **Executor**: Full execution cycle with signed reflective logs

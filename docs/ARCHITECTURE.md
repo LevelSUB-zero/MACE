@@ -65,10 +65,11 @@ MACE (Memory-Augmented Cognitive Engine) is a **deterministic cognitive executio
 
 **Algorithm**:
 ```python
-1. Score agents based on:
-   - Capability match with percept
-   - Intent alignment
+1. Score agents based on Rule-Based Deterministic Scoring:
+   - Capability match with percept (Tags)
+   - Intent alignment (Hard-coded heuristics)
    - BrainState context
+   - Note: No Embeddings or ML models in Stage-1
 
 2. Deterministic tie-breaking:
    - Sort by score (descending)
@@ -102,11 +103,12 @@ MACE (Memory-Augmented Cognitive Engine) is a **deterministic cognitive executio
 ```
 Working Memory (WM)
     ↓ (TTL expires or explicit promotion)
-Consolidated Working Memory (CWM)
+Consolidated Working Memory (CWM) - Consolidation Buffer
     ↓ (consolidation process)
 Episodic Memory
     ↓ (semantic extraction)
 Semantic Memory
+
 ```
 
 **Working Memory** (`src/mace/memory/wm.py`):
@@ -126,7 +128,7 @@ Semantic Memory
 
 ### 5. APT Engine (`src/mace/apt/engine.py`)
 
-**Purpose**: Append-only audit trail
+**Purpose**: Append-only performance event timeline
 
 **Features**:
 - Monotonic sequence numbers
@@ -158,6 +160,7 @@ Semantic Memory
 ```
 
 **Signature**: HMAC-SHA256 over canonical JSON
+
 
 ### 7. Governance (`src/mace/governance/`)
 
