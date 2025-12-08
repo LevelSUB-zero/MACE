@@ -4,7 +4,7 @@ System architecture and design documentation for Stage-1.
 
 ## Overview
 
-MACE (Memory-Augmented Cognitive Engine) is a **deterministic cognitive execution engine** designed for reproducible, auditable AI agent interactions.
+MACE (Meta Aware Cognitive Engine) is a **deterministic cognitive execution engine** designed for reproducible, auditable AI agent interactions.
 
 ## Design Principles
 

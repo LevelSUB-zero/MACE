@@ -1,4 +1,4 @@
-# MACE (Memory-Augmented Cognitive Engine)
+# MACE (Meta Aware Cognitive Engine)
 
 **Version**: 1.0.0 (Stage-1)  
 **Status**: Production Ready ✅

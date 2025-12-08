@@ -1,6 +1,6 @@
 # MACE Usage Guide
 
-Complete guide to using the Memory-Augmented Cognitive Engine (MACE) Stage-1.
+Complete guide to using the Meta Aware Cognitive Engine (MACE) Stage-1.
 
 ## Table of Contents
 - [Installation](#installation)
