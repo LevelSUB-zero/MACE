@@ -1,0 +1,49 @@
+{
+  "sweep_type": "time_shifted",
+  "snapshots": [
+    "T0_empty",
+    "T1_partial",
+    "T2_dense"
+  ],
+  "stats": {
+    "T0_empty": {
+      "useful": 0,
+      "redundant": 0,
+      "premature": 23
+    },
+    "T1_partial": {
+      "useful": 9,
+      "redundant": 0,
+      "premature": 14
+    },
+    "T2_dense": {
+      "useful": 8,
+      "redundant": 1,
+      "premature": 14
+    }
+  },
+  "temporal_analysis": {
+    "pattern_counts": {
+      "always_useful": 0,
+      "becomes_redundant": 1,
+      "never_escapes_premature": 14,
+      "variable": 8
+    },
+    "examples": {
+      "always_useful": [],
+      "becomes_redundant": [
+        "bb9936c5f69cf00f1ef4b83cdb3417a0d7a6073db3491892abe816a9630ad8e1"
+      ],
+      "never_escapes_premature": [
+        "3a6d04d282ffcda2a328d9fc4ed09dc81c1b55526a8acb816a57813c94cb1f4d",
+        "8475122cf1c6e1502288e8b2192d920161aa1aa99c04ad93a2320b97d3af9e6e",
+        "22f2ab7c02918f16564ca8faa38c4c8489f797749858bb6235cca969ca080244"
+      ],
+      "variable": [
+        "627a2a65b84b5bd220b4f73dc08ccebc9cd8add108e99e01b73fe34b5c79a983",
+        "564f4b9d67361ab0084e314e95c3e1bb5e878b325206b71dc29240ea5d9233d5",
+        "bdd9a8d364b5ba67971667d93f4f20a1be7314b453b3c39d77927799d7f6fa01"
+      ]
+    }
+  }
+}

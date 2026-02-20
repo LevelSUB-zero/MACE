@@ -1,0 +1,14 @@
+FROM llama-3.2-1b-instruct.Q4_K_M.gguf
+
+# Raw template that matches the training format exactly:
+# Input: {user text}
+# Output: {json}<|eot_id|>
+TEMPLATE """Input: {{ .Prompt }}
+Output: {{ .Response }}"""
+
+PARAMETER stop "<|eot_id|>"
+PARAMETER stop "<|end_of_text|>"
+PARAMETER temperature 0
+PARAMETER min_p 0.1
+PARAMETER num_predict 512
+PARAMETER repeat_penalty 1.15

@@ -1,0 +1,97 @@
+{
+    "type": "object",
+    "required": [
+        "candidate_id",
+        "features",
+        "proposed_key",
+        "value",
+        "provenance",
+        "consolidator_score",
+        "mem_snn_score"
+    ],
+    "properties": {
+        "candidate_id": {
+            "type": "string",
+            "description": "Deterministic ID for the memory promotion candidate"
+        },
+        "features": {
+            "type": "object",
+            "required": [
+                "frequency",
+                "recency",
+                "consistency",
+                "semantic_novelty",
+                "source_diversity",
+                "governance_conflict_flag"
+            ],
+            "properties": {
+                "frequency": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "How often this fact appears across episodes"
+                },
+                "recency": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Normalized recency score (1=most recent)"
+                },
+                "consistency": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Agreement across sources (1=fully consistent)"
+                },
+                "semantic_novelty": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Novelty vs existing SEM (1=completely new)"
+                },
+                "source_diversity": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Independence of sources (1=many diverse sources)"
+                },
+                "governance_conflict_flag": {
+                    "type": "boolean",
+                    "description": "True if contradiction, false fact, privacy issue, or council disagreement detected"
+                }
+            },
+            "additionalProperties": false
+        },
+        "proposed_key": {
+            "type": "string",
+            "description": "Inferred canonical key for SEM storage"
+        },
+        "value": {
+            "type": "string",
+            "description": "Proposed value to store"
+        },
+        "provenance": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "List of episodic_ids that contributed to this candidate"
+        },
+        "consolidator_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Heuristic score from consolidator"
+        },
+        "mem_snn_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Shadow score from MEM-SNN stub (placeholder)"
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "additionalProperties": false
+}

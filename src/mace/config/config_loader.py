@@ -56,3 +56,35 @@ def get_signing_key(key_id):
 def get_current_schema_version():
     """Get current schema version."""
     return get_schema_version().get('version', '0.0.1')
+
+# =============================================================================
+# Stage-2 Configuration Access
+# =============================================================================
+
+def get_stage2_config():
+    """Get Stage-2 configuration."""
+    return _load_yaml('stage2.yaml')
+
+def get_learning_mode():
+    """
+    Get the current learning mode.
+    In Stage-2, this MUST return 'shadow'.
+    """
+    config = get_stage2_config()
+    return config.get('MEM_LEARNING_MODE', 'shadow')
+
+def get_candidate_features():
+    """
+    Get the locked candidate feature set.
+    DO NOT EXPAND without governance doc change.
+    """
+    config = get_stage2_config()
+    return config.get('CANDIDATE_FEATURES', [
+        'frequency',
+        'consistency',
+        'recency',
+        'source_diversity',
+        'semantic_novelty',
+        'governance_conflict_flag'
+    ])
+

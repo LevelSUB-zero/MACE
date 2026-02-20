@@ -1,0 +1,86 @@
+{
+  "snapshot_id": "ef8e43ba591cf0dea42b3a698dd779e83631243299026075de6bdf1b7aba312c",
+  "goals": [
+    {
+      "goal_id": "learn_preferences",
+      "description": "Learn stable user preferences",
+      "priority": 1.0
+    },
+    {
+      "goal_id": "filter_ephemeral",
+      "description": "Filter temporary states",
+      "priority": 0.8
+    },
+    {
+      "goal_id": "validate_facts",
+      "description": "Validate factual claims",
+      "priority": 0.9
+    }
+  ],
+  "working_memory": [
+    {
+      "memory_id": "a43092d7466be50621b40744eb5812880b5a140b31f11c210d57cc7570256873",
+      "content": {
+        "text": "I might like coffee more than tea."
+      },
+      "source": "group2",
+      "ttl": 3
+    },
+    {
+      "memory_id": "9fda5b8694c3c6e029ed6605ab10a942d67d6b1469dc1fd619a920a4db0ec809",
+      "content": {
+        "text": "The capital of Australia is Sydney."
+      },
+      "source": "group3",
+      "ttl": 4
+    },
+    {
+      "memory_id": "42e6e8097316e472a79655fd1fec0de905774472742ea92629b202784f08c033",
+      "content": {
+        "text": "Australias capital is Sydney."
+      },
+      "source": "group3",
+      "ttl": 5
+    },
+    {
+      "memory_id": "379e094ba19b06287bac85efbd5f7c36edbab22b5a42e8f89e54e52d617a4d04",
+      "content": {
+        "text": "Sydney is the capital of Australia."
+      },
+      "source": "group3",
+      "ttl": 6
+    },
+    {
+      "memory_id": "5d442120fc733499824fb7693adc9195a76a9f6dc4e0ad3934518ad7438e0baf",
+      "content": {
+        "text": "Im tired today."
+      },
+      "source": "group4",
+      "ttl": 7
+    },
+    {
+      "memory_id": "dd1460673178a9e1ea97aedf2652c108f78fec89aad4b657099d800332f9d5b5",
+      "content": {
+        "text": "I feel sleepy right now."
+      },
+      "source": "group4",
+      "ttl": 8
+    },
+    {
+      "memory_id": "497fcd89f61e406714e933f129c77b7a0bd3cb1f72a0a977364ed05211c480fa",
+      "content": {
+        "text": "Im exhausted at the moment."
+      },
+      "source": "group4",
+      "ttl": 9
+    }
+  ],
+  "attention_gain": 0.28242953648100017,
+  "explore_bias": 0.5,
+  "resource_load": {
+    "cpu": 0.0,
+    "memory": 0.0
+  },
+  "last_error": null,
+  "tick_count": 12
+}

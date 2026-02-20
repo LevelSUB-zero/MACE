@@ -1,0 +1,56 @@
+# Stage-2 Configuration (AUTHORITATIVE)
+# This file controls all Stage-2 learning behavior.
+# Spec: docs/stage2_ideology.md
+
+# =============================================================================
+# LEARNING MODE
+# =============================================================================
+# ONLY ALLOWED VALUE IN STAGE-2: "shadow"
+#
+# Shadow mode means:
+# - MEM-SNN may predict, score, rank
+# - Outputs are logged, never consumed
+# - No live code path reads shadow outputs
+# - Removing MEM-SNN produces identical system behavior
+#
+# If this value is anything other than "shadow", Stage-2 is BROKEN.
+
+MEM_LEARNING_MODE: shadow
+
+# =============================================================================
+# SHADOW TABLE CONFIGURATION
+# =============================================================================
+# Where MEM-SNN predictions are logged (never read by live code)
+
+SHADOW_TABLE: mem_snn_shadow_predictions
+DIVERGENCE_TABLE: mem_snn_divergence_log
+
+# =============================================================================
+# EVENT LOGGING
+# =============================================================================
+# All learning-relevant events are logged here (append-only)
+
+EVENT_LOG_TABLE: stage2_events
+EVENT_SCHEMA_VERSION: "2.0"
+
+# =============================================================================
+# CANDIDATE FEATURE SET (LOCKED)
+# =============================================================================
+# DO NOT EXPAND THIS LIST WITHOUT GOVERNANCE DOC CHANGE
+# Spec: docs/stage2_candidate_semantics.md
+
+CANDIDATE_FEATURES:
+  - frequency
+  - consistency
+  - recency
+  - source_diversity
+  - semantic_novelty
+  - governance_conflict_flag
+
+# =============================================================================
+# KILL-SWITCH INTEGRATION
+# =============================================================================
+# Stage-2 specific kill-switch triggers
+
+STAGE2_KILLSWITCH_FILE: mace_stage2_killswitch.flag
+HALT_ON_SHADOW_VIOLATION: true

@@ -1,0 +1,278 @@
+{
+  "sweep_type": "policy",
+  "policies": [
+    "P1_strict_consistency",
+    "P2_frequency_boost",
+    "P3_novelty_focus",
+    "P4_conflict_aware",
+    "P5_score_threshold"
+  ],
+  "stats": {
+    "P1_strict_consistency": {
+      "total": 23,
+      "approved": 15,
+      "rejected": 8,
+      "approval_rate": 0.6521739130434783
+    },
+    "P2_frequency_boost": {
+      "total": 23,
+      "approved": 2,
+      "rejected": 21,
+      "approval_rate": 0.08695652173913043
+    },
+    "P3_novelty_focus": {
+      "total": 23,
+      "approved": 20,
+      "rejected": 3,
+      "approval_rate": 0.8695652173913043
+    },
+    "P4_conflict_aware": {
+      "total": 23,
+      "approved": 20,
+      "rejected": 3,
+      "approval_rate": 0.8695652173913043
+    },
+    "P5_score_threshold": {
+      "total": 23,
+      "approved": 20,
+      "rejected": 3,
+      "approval_rate": 0.8695652173913043
+    }
+  },
+  "disagreements": [
+    {
+      "candidate_id": "627a2a65b84b5bd220b4f73dc08ccebc9cd8add108e99e01b73fe34b5c79a983",
+      "proposed_key": "user/preferences/favorite_color",
+      "value": "blue",
+      "decisions": {
+        "P1_strict_consistency": "rejected",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "3a6d04d282ffcda2a328d9fc4ed09dc81c1b55526a8acb816a57813c94cb1f4d",
+      "proposed_key": "user/preferences/favorite_color",
+      "value": "color",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "bb9936c5f69cf00f1ef4b83cdb3417a0d7a6073db3491892abe816a9630ad8e1",
+      "proposed_key": "world/fact/geography/capital_france",
+      "value": "paris",
+      "decisions": {
+        "P1_strict_consistency": "rejected",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "564f4b9d67361ab0084e314e95c3e1bb5e878b325206b71dc29240ea5d9233d5",
+      "proposed_key": "user/preferences/programming_language",
+      "value": "python",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "8475122cf1c6e1502288e8b2192d920161aa1aa99c04ad93a2320b97d3af9e6e",
+      "proposed_key": "user/preferences/programming_language",
+      "value": "language",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "22f2ab7c02918f16564ca8faa38c4c8489f797749858bb6235cca969ca080244",
+      "proposed_key": "context/project/framework",
+      "value": "pytorch",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "a5bdc063743838220ee289e36fd08d083d4fe85c326828327625d33554bb481f",
+      "proposed_key": "context/project/framework",
+      "value": "here",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "5ff1dfc1bf79831949f98bb5bedb1ec786ddd37dad71b391aad1a2fdc80723c4",
+      "proposed_key": "context/project/framework",
+      "value": "model",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "67b2a670aa92d5aba70b6547b4262ff597cf893dfc35fc1fd7c31dc103db12b9",
+      "proposed_key": "user/preferences/beverage",
+      "value": "coffee",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "7365ddeda2fa3707e84552c27645d50455b7d57f02eec96e5110d623c2c02aa7",
+      "proposed_key": "user/preferences/beverage",
+      "value": "great",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "74d0ac5a22ee79904e5c1a2415ccf528136979483c0e387f967156435f71d36e",
+      "proposed_key": "user/preferences/beverage",
+      "value": "tea",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "bdd9a8d364b5ba67971667d93f4f20a1be7314b453b3c39d77927799d7f6fa01",
+      "proposed_key": "world/fact/geography/capital_australia",
+      "value": "australia",
+      "decisions": {
+        "P1_strict_consistency": "rejected",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "9c0cef12686b483b04a5cc412a80e1c696042a55aad03463e8fa7dd03a1e2ec6",
+      "proposed_key": "user/private/ssn",
+      "value": "123-45-6789",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "91276f2d8e70a60f1b024d463aa9da616f91f99511e42f57327dc203711a6c58",
+      "proposed_key": "user/private/ssn",
+      "value": "number",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "b813f7f365ee27339fe628f28c4955b9341741e85f064205af5f0b23df629495",
+      "proposed_key": "user/preferences/color_conflict",
+      "value": "blue",
+      "decisions": {
+        "P1_strict_consistency": "rejected",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "6b6649797033b9d8eeb09cd9f98e1fe0c685101444b72a1329d76eeec6700222",
+      "proposed_key": "user/preferences/color_conflict",
+      "value": "green",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "7b06b0848fb8b2c68b1947aef7648980aa2cc92dd18f164c7d29a122aee677f1",
+      "proposed_key": "context/meeting/time",
+      "value": "a",
+      "decisions": {
+        "P1_strict_consistency": "rejected",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    },
+    {
+      "candidate_id": "9647e44fbdd8713a9c6938a4715379d1533e0a53f6c7c98c435f90f5ba3fed44",
+      "proposed_key": "context/meeting/time",
+      "value": "2:30pm",
+      "decisions": {
+        "P1_strict_consistency": "approved",
+        "P2_frequency_boost": "rejected",
+        "P3_novelty_focus": "approved",
+        "P4_conflict_aware": "approved",
+        "P5_score_threshold": "approved"
+      },
+      "conflict_type": "mixed"
+    }
+  ]
+}

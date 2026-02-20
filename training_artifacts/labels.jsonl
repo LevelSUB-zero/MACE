@@ -1,0 +1,6 @@
+{"candidate_id": "fc9ba970b7b701bf1fa0fc1d0ec7374aa82704a0af654850692a7e2f9355871f", "label": "approve", "reason": "stable"}
+{"candidate_id": "06283644c05d8a3866f0ee71242af664221eecc7907cd681c210f5f020434a29", "label": "reject", "reason": "ambig"}
+{"candidate_id": "52d6e8391ff61ee5b7c863be7053012d53a0272f9761fd8800e26ef87e184aac", "label": "reject", "reason": "ambig"}
+{"candidate_id": "bf47842f654fe16efb421241f1464b9a575e072d4578226f28259f18c7ecf3e5", "label": "reject", "reason": "ambig"}
+{"candidate_id": "048d5e1ecad374cb53dafa1d3b437d68de399878794fab21520cadaa970860cf", "label": "reject", "reason": "false"}
+{"candidate_id": "442ed9a0eeff80264026c1cd11b2241a33efe3f5031718cbb4a63739af2dc6fa", "label": "reject", "reason": "ephemeral"}

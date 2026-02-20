@@ -1,0 +1,25 @@
+{
+  "generated_at": "2025-12-30T23:39:07.673673",
+  "base_episodes": 36,
+  "base_candidates": 23,
+  "sweep_variants": 3,
+  "policy_variants": 5,
+  "time_snapshots": 3,
+  "total_labeled_examples": 276,
+  "label_distribution": {
+    "truth": {
+      "correct": 1,
+      "incorrect": 1,
+      "uncertain": 21
+    },
+    "utility": {
+      "useful": 9,
+      "redundant": 0,
+      "premature": 14
+    },
+    "safety": {
+      "safe": 20,
+      "unsafe": 3
+    }
+  }
+}
