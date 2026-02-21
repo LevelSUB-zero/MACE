@@ -1,8 +1,8 @@
 # 🧠 MACE Mission Control — Single Source of Truth
 
-> **Last Updated:** 2026-02-20 (Session 2)
-> **Active Stage:** NLU Parser Pivot (Pre-Stage-6)
-> **Overall Project Phase:** Stages 0–5 COMPLETE → Stage 6 (The Organism) = VISION
+> **Last Updated:** 2026-02-21
+> **Active Stage:** Stage 2 (NLU Parser Pivot)
+> **Overall Project Phase:** Stage 1 COMPLETE → Stage 2 (Active) → Stages 3, 4, 5 Pipeline → Stage 6 (The Organism) = VISION
 
 ---
 
@@ -10,7 +10,7 @@
 
 ### Active Workstream: NLU Parser — Prompt-Engineered Gemma 3 1B
 **Goal:** Deterministic NLU using stock Gemma 3 1B with comprehensive prompt engineering + schema validation.
-**Approach Pivot (D-006):** Fine-tuning abandoned due to GGUF/CUDA issues; prompt engineering achieves 10/10 accuracy.
+**Approach Pivot (D-004):** Fine-tuning abandoned due to GGUF/CUDA issues; prompt engineering achieves 10/10 accuracy.
 
 | Task | Status | Key Files |
 |------|--------|-----------|
@@ -20,7 +20,7 @@
 | Prompt-engineered NLU with Gemma 3 1B | ✅ Done (10/10) | `src/mace/nlu/ollama_nlu.py` |
 | Schema validator + retry loop | ✅ Done | `src/mace/nlu/ollama_nlu.py` |
 | Ollama CPU mode (GTX 960M workaround) | ✅ Done | `OLLAMA_NUM_GPU=0` env var |
-| Integration with MACE cognitive pipeline | ⏳ Pending | `src/mace/core/`, `src/mace/runtime/` |
+| Integration with MACE cognitive pipeline | ✅ Done | `src/mace/core/`, `src/mace/runtime/` |
 
 ### Blocked / Waiting
 - None currently.
@@ -34,10 +34,11 @@ MACE = "Meta Aware Cognitive Engine" — Governed Digital Life, NOT an LLM wrapp
 
 Evolution Stages:
   Stage 0 (The Stub/Rock)       ✅ DONE
-  Stage 1-2 (The Skeleton/Spine) in progress 
-  Stage 3 (The Advisor/Ghost)    not DONE
-  Stage 4 (The Mirror/Cortex)    not DONE — Shadow Cortex, Meta-Cognition
-  Stage 5 (The Architect/Hands)  not DONE — Self-Improvement, Tool Synthesis
+  Stage 1 (The Skeleton/Spine)  ✅ DONE
+  Stage 2 (Memory Governance)    🟡 ACTIVE
+  Stage 3 (The Advisor/Ghost)    ⚪ PENDING
+  Stage 4 (The Mirror/Cortex)    ⚪ PENDING — Shadow Cortex, Meta-Cognition
+  Stage 5 (The Architect/Hands)  ⚪ PENDING — Self-Improvement, Tool Synthesis
   Stage 6 (The Organism/Being)   🎯 VISION — True Autonomy
 
 Core Pipeline: Input → Executor → Router → Agent → Council → Reflective Log → BrainState
@@ -58,10 +59,8 @@ Governance: DNA, not guardrails. Never disable to "move fast."
 
 | # | Date | Decision | Rationale |
 |---|------|----------|-----------|
-| D-006 | 2026-02-20 | Pivot from fine-tuning to prompt-engineered Gemma 3 1B | Fine-tuning had GGUF conversion failures + CUDA crashes on GTX 960M; stock Gemma 3 1B + 19 few-shot examples + schema validator achieves 10/10 accuracy with zero fine-tuning |
-| D-005 | 2026-02 | Pivot NLU from BERT to Qwen 1.5B Parser | BERT approach was failing; behavior shaping = deterministic, zero-hallucination NLU |
-| D-004 | 2025-12 | Stage 5 complete — Tool Synthesis working | Passed "The Evolution" golden test |
-| D-003 | 2025-12 | Stage 4 complete — ReptileBrain is Primary | Shadow Cortex promoted, Stage 3 router deprecated |
+| D-004 | 2026-02-20 | Pivot from fine-tuning to prompt-engineered Gemma 3 1B | Fine-tuning had GGUF conversion failures + CUDA crashes on GTX 960M; stock Gemma 3 1B + 19 few-shot examples + schema validator achieves 10/10 accuracy with zero fine-tuning |
+| D-003 | 2026-02 | Pivot NLU from BERT to Qwen 1.5B Parser | BERT approach was failing; behavior shaping = deterministic, zero-hallucination NLU |
 | D-002 | 2025-12 | v1.0.0 Release (Stage-1 production) | 100% replay fidelity, p95=118ms |
 | D-001 | 2025-11 | Adopt "Organism" vision over "Tool" vision | MACE is governed digital life, not an LLM wrapper |
 

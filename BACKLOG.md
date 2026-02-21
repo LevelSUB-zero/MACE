@@ -18,30 +18,31 @@
   - [x] Zero-hallucination on test set (10/10 passed)
   - [x] Schema validator + 3-retry loop + keyword fallback
 - **Key Files:** `src/mace/nlu/ollama_nlu.py`, `models/Modelfile`
-- **Decision Ref:** D-005, D-006
+- **Decision Ref:** D-003, D-004
 
 ### NLU-002: Parser Integration with MACE Pipeline
-- **Status:** 🟡 In Progress
+- **Status:** ✅ Done
 - **Owner:** Solo
 - **Goal:** Wire the NLU parser into the MACE cognitive execution pipeline
 - **Acceptance Criteria:**
   - [x] `ollama_nlu.py` updated with Gemma 3 1B + prompt engineering
-  - [ ] Router can receive structured NLU output
-  - [ ] End-to-end test: user input → NLU → Router → Agent → Output
-- **Key Files:** `src/mace/nlu/ollama_nlu.py`, `src/mace/runtime/executor.py`
+  - [x] Router can receive structured NLU output
+  - [x] End-to-end test: user input → NLU → Router → Agent → Output
+  - [x] SQLite DB locking fixed during Pytest execution on Windows
+- **Key Files:** `src/mace/runtime/executor.py`, `src/mace/router/stage1_router.py`, `tests/v02_validation/test_executor_v2.py`, `src/mace/runtime/executor.py`
 
 ---
 
 ## 🟠 P1 — Next Up
 
-### ARCH-001: Stage 6 Planning (The Organism)
-- **Status:** 🟢 Ready
-- **Goal:** Define Stage 6 architecture — True Autonomy with self-directed goals
+### ARCH-001: Stage 3, 4, 5 Planning & Execution
+- **Status:** ⚪ To Do
+- **Goal:** Execute the pipeline for Stages 3, 4, and 5 before moving to Stage 6 (The Organism).
 - **Tasks:**
-  - [ ] Write `docs/phase6/STAGE6_PROPOSAL.md`
-  - [ ] Define what "self-directed goals" means concretely
-  - [ ] Design the governance model for autonomous operation
-  - [ ] Anti-Drift Check against Vision Manifesto
+  - [ ] Stage 3: Advisory System & Authority Boundaries
+  - [ ] Stage 4: Shadow Cortex & Evolution
+  - [ ] Stage 5: Tool Synthesis & Final Pre-Stage-6 Golden Tests
+  - [ ] Anti-Drift Check against Vision Manifesto at each stage
 - **Depends On:** NLU-001 (parser must work before organism can "hear")
 
 ### INFRA-001: README Modernization

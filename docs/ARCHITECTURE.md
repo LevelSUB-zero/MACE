@@ -99,16 +99,22 @@ MACE (Meta Aware Cognitive Engine) is a **deterministic cognitive execution engi
 **Persistence**: Saved to `brainstate_snapshots` table
 
 ### 4. Memory Hierarchy
+**(Stage-2 Epistemic Governance model)**
 
 ```
 Working Memory (WM)
-    ↓ (TTL expires or explicit promotion)
-Consolidated Working Memory (CWM) - Consolidation Buffer
+    ↓ (TTL expires)
+Consolidated Working Memory (CWM)
     ↓ (consolidation process)
-Episodic Memory
-    ↓ (semantic extraction)
-Semantic Memory
-
+Episodic Memory (persistent record of thoughts and events)
+    ↓ (pattern detection + clustering)
+Candidate Memory (Transient Hypothesis)
+    ↓ (judged by Council)
+Council Labels (Truth, Safety, Utility, Governance)
+    ↓ (Temporal Credit Assignment)
+Amendments (Corrections & Confirmations)
+    ↓ (Semantic Extraction -> Ground Truth)
+Semantic Memory (knowledge graph)
 ```
 
 **Working Memory** (`src/mace/memory/wm.py`):
@@ -117,14 +123,25 @@ Semantic Memory
 - FIFO eviction
 
 **Episodic Memory** (`src/mace/memory/episodic.py`):
-- Long-term event storage
-- Deterministic IDs
+- Long-term event storage with deterministic IDs
 - Provenance tracking
 
+**Candidate Memory** (`src/mace/memory/candidate.py`):
+- Transient, compressed hypotheses derived from episodic patterns.
+- Not a belief; it is a question posed to governance ("Is this recurring?").
+- Features: `frequency`, `consistency`, `recency`, `source_diversity`, `semantic_novelty`.
+
+**Council Labels & Amendments**:
+- The Council acts as a truth labeler, not a governor. It labels candidates with immutable logs of `Truth`, `Safety`, `Utility`, or `Governance`. 
+- **Amendments**: Explicit temporal corrections ("We thought X, now we think Y"). Creates delayed negative/positive reward.
+
+**MEM-SNN (Spiking Neural Network)**:
+- Operates in **Strict Shadow Mode**.
+- Predicts Council labels based on Candidate features + Amendment history.
+- Forbidden from altering routing, execution, or directly writing to semantic memory. Only produces observable `predicted_truth`.
+
 **Semantic Memory** (`src/mace/memory/semantic.py`):
-- Knowledge graph
-- PII filtering
-- Size limits enforced
+- Final knowledge graph. Write operations pass through Policy/Safety checks and PII filters.
 
 ### 5. APT Engine (`src/mace/apt/engine.py`)
 
