@@ -32,13 +32,13 @@
 - **Key Files:** `src/mace/runtime/executor.py`, `src/mace/router/stage1_router.py`, `tests/v02_validation/test_executor_v2.py`
 
 ### MEM-001: Stage-2 Candidate Generation & Testing Pipeline
-- **Status:** 🟡 In Progress
+- **Status:** ✅ Done
 - **Owner:** Solo
 - **Goal:** Implement transient Candidate object generation from raw Episodic traces, answering "Is this recurring", and write holistic end-to-end memory pipeline tests to guarantee data flow integrity.
 - **Acceptance Criteria:**
-  - [ ] Implement deterministic Candidate clustering matching the 6 frozen features
-  - [ ] Candidates contain exact feature keys without LLM generation
-  - [ ] End-to-end memory pipeline test tests API calls (saving, retrieving)
+  - [x] Implement deterministic Candidate clustering matching the 6 frozen features
+  - [x] Candidates contain exact feature keys without LLM generation
+  - [x] End-to-end memory pipeline test tests API calls (saving, retrieving)
 - **Key Files:** `src/mace/memory/candidate.py`, `tests/v02_validation/test_memory_pipeline.py`
 - **Spec Ref:** `docs/specs/SPEC-MEM-001.md`
 

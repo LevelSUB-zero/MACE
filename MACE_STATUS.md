@@ -13,10 +13,10 @@
 
 | Task | Status | Key Files |
 |------|--------|-----------|
-| Create `candidate.py` and clustering logic | ⏳ Pending | `src/mace/memory/candidate.py` |
-| Implement the 6 Frozen Features (Math/Heuristics) | ⏳ Pending | `src/mace/memory/candidate.py` |
-| Write unit testing for Candidate generation | ⏳ Pending | `tests/v02_validation/test_candidate.py` |
-| End-to-End Memory Pipeline tests (Memory API saving/retrieving) | ⏳ Pending | `tests/v02_validation/test_memory_pipeline.py` |
+| Create `candidate.py` and clustering logic | ✅ Done | `src/mace/memory/candidate.py` |
+| Implement the 6 Frozen Features (Math/Heuristics) | ✅ Done | `src/mace/memory/candidate.py` |
+| Write unit testing for Candidate generation | ✅ Done | `tests/v02_validation/test_candidate.py` |
+| End-to-End Memory Pipeline tests (Memory API saving/retrieving) | ✅ Done | `tests/v02_validation/test_memory_pipeline.py` |
 
 ### Blocked / Waiting
 - None currently.
