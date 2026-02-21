@@ -42,6 +42,18 @@
 - **Key Files:** `src/mace/memory/candidate.py`, `tests/v02_validation/test_memory_pipeline.py`
 - **Spec Ref:** `docs/specs/SPEC-MEM-001.md`
 
+### MEM-002: Holistic Memory Saving & Retrieving Validation (E2E)
+- **Status:** 🟡 In Progress
+- **Owner:** Solo
+- **Goal:** Validate reliability of MACE's Stage-1 and Stage-2 memory boundaries (saving & retrieving via Profile/Knowledge Agents) with E2E tests, avoiding SQLite locked errors across rapid executions.
+- **Acceptance Criteria:**
+  - [ ] MACE correctly maps `profile_store` percept -> commits to semantic DB.
+  - [ ] MACE correctly accesses previously committed value with `profile_recall` percept in a *separate* executor call.
+  - [ ] MACE correctly handles `fact_teach` and `history_search` lifecycle via knowledge agent.
+  - [ ] Rapid sequential execution of saves and retrievals does not raise SQLite `Database is locked`.
+- **Key Files:** `tests/v02_validation/test_memory_retrieval.py`
+- **Spec Ref:** `docs/specs/SPEC-MEM-002.md`
+
 ---
 
 ## 🟠 P1 — Next Up

@@ -8,15 +8,14 @@
 
 ## 🚦 Current Focus
 
-### Active Workstream: MEM-001 — Candidate Generation & Testing
-**Goal:** Implement transient Candidate object generation from raw Episodic traces and validate the end-to-end memory pipeline (WM -> Episodic -> Semantic) robustly.
+### Active Workstream: MEM-002 — Holistic Memory Saving & Retrieving Validation
+**Goal:** Validate reliability of MACE's Stage-1 and Stage-2 memory boundaries (saving & retrieving via Profile/Knowledge Agents) with E2E tests, avoiding SQLite locked errors across rapid executions.
 
 | Task | Status | Key Files |
 |------|--------|-----------|
-| Create `candidate.py` and clustering logic | ✅ Done | `src/mace/memory/candidate.py` |
-| Implement the 6 Frozen Features (Math/Heuristics) | ✅ Done | `src/mace/memory/candidate.py` |
-| Write unit testing for Candidate generation | ✅ Done | `tests/v02_validation/test_candidate.py` |
-| End-to-End Memory Pipeline tests (Memory API saving/retrieving) | ✅ Done | `tests/v02_validation/test_memory_pipeline.py` |
+| Implement `test_profile_memory_lifecycle` | ⏳ Pending | `tests/v02_validation/test_memory_retrieval.py` |
+| Implement `test_knowledge_memory_lifecycle` | ⏳ Pending | `tests/v02_validation/test_memory_retrieval.py` |
+| Fix `Database locked` SQLite errors if tests fail sequentially | ⏳ Pending | `src/mace/memory/storage_backend.py` |
 
 ### Blocked / Waiting
 - None currently.
