@@ -8,19 +8,15 @@
 
 ## 🚦 Current Focus
 
-### Active Workstream: NLU Parser — Prompt-Engineered Gemma 3 1B
-**Goal:** Deterministic NLU using stock Gemma 3 1B with comprehensive prompt engineering + schema validation.
-**Approach Pivot (D-004):** Fine-tuning abandoned due to GGUF/CUDA issues; prompt engineering achieves 10/10 accuracy.
+### Active Workstream: MEM-001 — Candidate Generation & Testing
+**Goal:** Implement transient Candidate object generation from raw Episodic traces and validate the end-to-end memory pipeline (WM -> Episodic -> Semantic) robustly.
 
 | Task | Status | Key Files |
 |------|--------|-----------|
-| Standardize training data to 8-key JSON schema | ✅ Done | `data/nlu/`, `src/mace/nlu/convert_to_bio.py` |
-| Data augmentation (1063 examples) | ✅ Done | `src/mace/nlu/augment_data.py` |
-| Fine-tune Llama 3.2 1B (abandoned) | ❌ Abandoned | `notebooks/lightning_behavior_shaping.py` |
-| Prompt-engineered NLU with Gemma 3 1B | ✅ Done (10/10) | `src/mace/nlu/ollama_nlu.py` |
-| Schema validator + retry loop | ✅ Done | `src/mace/nlu/ollama_nlu.py` |
-| Ollama CPU mode (GTX 960M workaround) | ✅ Done | `OLLAMA_NUM_GPU=0` env var |
-| Integration with MACE cognitive pipeline | ✅ Done | `src/mace/core/`, `src/mace/runtime/` |
+| Create `candidate.py` and clustering logic | ⏳ Pending | `src/mace/memory/candidate.py` |
+| Implement the 6 Frozen Features (Math/Heuristics) | ⏳ Pending | `src/mace/memory/candidate.py` |
+| Write unit testing for Candidate generation | ⏳ Pending | `tests/v02_validation/test_candidate.py` |
+| End-to-End Memory Pipeline tests (Memory API saving/retrieving) | ⏳ Pending | `tests/v02_validation/test_memory_pipeline.py` |
 
 ### Blocked / Waiting
 - None currently.
