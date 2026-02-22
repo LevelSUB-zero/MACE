@@ -272,6 +272,73 @@ FEW_SHOT_EXAMPLES = [
             "entities": {"query_type": "reasoning", "topic": "comedy preference"}
         }
     },
+    # ─── ADDITIONAL COVERAGE (MEM-002) ───
+    # 20. contact_store — "my friend X is a Y"
+    {
+        "input": "my friend John is a doctor",
+        "output": {
+            "text": "my friend John is a doctor",
+            "root_intent": "contact_store",
+            "memory_type": "sem",
+            "complexity": "atomic",
+            "entities": {"person": "John", "attribute": "role", "value": "doctor"}
+        }
+    },
+    # 21. fact_teach — "remember that X is Y"
+    {
+        "input": "remember that the sun is a star",
+        "output": {
+            "text": "remember that the sun is a star",
+            "root_intent": "fact_teach",
+            "memory_type": "sem",
+            "complexity": "atomic",
+            "entities": {"attribute": "sun", "value": "a star"}
+        }
+    },
+    # 22. profile_recall — "what is my X"
+    {
+        "input": "what is my name",
+        "output": {
+            "text": "what is my name",
+            "root_intent": "profile_recall",
+            "memory_type": "sem",
+            "complexity": "atomic",
+            "entities": {"attribute": "name"}
+        }
+    },
+    # 23. profile_store — location variant
+    {
+        "input": "I live in Tokyo",
+        "output": {
+            "text": "I live in Tokyo",
+            "root_intent": "profile_store",
+            "memory_type": "sem",
+            "complexity": "atomic",
+            "entities": {"attribute": "location", "value": "Tokyo"}
+        }
+    },
+    # 24. history_search — "what is X" (fact retrieval)
+    {
+        "input": "what is the sun",
+        "output": {
+            "text": "what is the sun",
+            "root_intent": "history_search",
+            "memory_type": "sem",
+            "complexity": "atomic",
+            "entities": {"attribute": "sun"}
+        }
+    },
+    # 25. contact_recall — "who is X"
+    {
+        "input": "who is John",
+        "output": {
+            "text": "who is John",
+            "root_intent": "contact_recall",
+            "memory_type": "sem",
+            "complexity": "atomic",
+            "entities": {"person": "John"}
+        }
+    },
 ]
 
 # =============================================================

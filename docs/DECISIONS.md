@@ -5,6 +5,15 @@
 
 ---
 
+## D-005 — Agent Key Normalization Requirement
+**Date:** 2026-02-22  
+**Context:** During MEM-002 E2E testing, `profile_agent` was constructing canonical keys using raw NLU entity values (e.g. `user/contacts/John/role`). The `_validate_key` regex (`[a-z0-9_]+`) silently rejected these, causing `put_sem` to return `INVALID_KEY_FORMAT` with no visible error.  
+**Decision:** All agents MUST lowercase and sanitize entity values before constructing canonical keys. Added `subject_key = subject.lower().replace(" ", "_")` normalization in `profile_agent.py`.  
+**Consequences:** Prevents silent data loss from case mismatches. Future agents must follow the same normalization pattern.  
+**Anti-Drift Check:** ✅ Governance-as-DNA — key validation is structural, not optional. ✅ Deterministic — same input always produces same key.
+
+---
+
 ## D-004 — NLU Pivot 2: Gemma 3 1B Prompt-Engineered Parser
 **Date:** 2026-02-20  
 **Context:** Fine-tuning approach from D-003 had GGUF conversion failures and CUDA crashes on GTX 960M hardware.  

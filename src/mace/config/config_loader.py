@@ -48,6 +48,10 @@ def get_default_token_budget():
     """Get default token budget for agents."""
     return get_limits().get('default_token_budget', 1000)
 
+def get_agent_timeout_ms():
+    """Get agent timeout in milliseconds (Rule F4)."""
+    return get_limits().get('agent_timeout_ms', 30000)
+
 def get_signing_key(key_id):
     """Get signing key by ID."""
     keys = get_keys()

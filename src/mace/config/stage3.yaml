@@ -1,0 +1,124 @@
+# Stage-3 Configuration (AUTHORITATIVE)
+# This file controls all Stage-3 advisory behavior.
+# Spec: docs/stage3/EXECUTION_PLAN_FINAL.md
+
+# =============================================================================
+# LEARNING MODE
+# =============================================================================
+# ALLOWED VALUES IN STAGE-3: "shadow" | "advisory"
+#
+# Shadow mode (inherited from Stage-2):
+# - MEM-SNN may predict, score, rank
+# - Outputs are logged, never consumed
+# - No live code path reads shadow outputs
+#
+# Advisory mode (Stage-3 NEW):
+# - MEM-SNN outputs are VISIBLE but NOT TRUSTED
+# - AdvisoryOutput objects are produced AFTER execution
+# - Outputs are logged to ReflectiveLog only
+# - Router produces decisions BEFORE seeing advice
+# - Advice can disagree — disagreement is logged, not resolved
+#
+# Mode transition requires:
+# - Council approval + admin signature
+# - Governance event logged
+# - Replay-verifiable
+
+MEM_LEARNING_MODE: advisory
+
+# =============================================================================
+# ADVISORY TABLES
+# =============================================================================
+# Where advisory outputs are logged (reflective only, never consumed by execution)
+
+ADVISORY_TABLE: stage3_advisory_outputs
+META_OBSERVATION_TABLE: stage3_meta_observations
+DIVERGENCE_TABLE: stage3_divergence_log
+
+# Inherited from Stage-2 for comparison
+SHADOW_TABLE: mem_snn_shadow_predictions
+
+# =============================================================================
+# EVENT LOGGING
+# =============================================================================
+# All advisory events are logged here (append-only)
+
+EVENT_LOG_TABLE: stage3_events
+EVENT_SCHEMA_VERSION: "3.0"
+
+# =============================================================================
+# ADVISORY OUTPUT TYPES (LOCKED)
+# =============================================================================
+# spec: docs/stage3/advisory_system_spec.md section 4
+
+ALLOWED_ADVICE_TYPES:
+  - routing_suggestion
+  - risk_note
+  - confidence_annotation
+  - similarity_hint
+  - anomaly_report
+  - retrospective_summary
+  - suggested_test
+  - human_action_recommendation
+
+# =============================================================================
+# FORBIDDEN TOKENS (INGESTION BLOCKLIST)
+# =============================================================================
+# If advice contains any of these, reject with ADVICE_MALFORMED
+
+FORBIDDEN_TOKENS:
+  - "weight"
+  - "threshold"
+  - "score="
+  - "token_budget"
+  - "promote"
+  - "write"
+  - "delete"
+  - "quarantine"
+  - "set:"
+  - "priority="
+  - "always"
+  - "never"
+  - "autopromote"
+  - "route_weight"
+  - "sem_put"
+  - "apply_patch"
+  - "deploy"
+
+# =============================================================================
+# CONTAINMENT INVARIANTS
+# =============================================================================
+# These are enforcement flags for runtime guards
+
+TEMPORAL_CONTAINMENT: true    # Advisory comes AFTER execution
+PERSISTENCE_CONTAINMENT: true # Advisory ONLY in ReflectiveLog
+SEMANTIC_CONTAINMENT: true    # Confidence values are NON-COMPARABLE
+INTERPRETABILITY_LOCK: true   # Human-readable only, no aux models
+
+# =============================================================================
+# KILL-SWITCH INTEGRATION
+# =============================================================================
+# Stage-3 specific kill-switch triggers
+
+STAGE3_KILLSWITCH_FILE: mace_stage3_killswitch.flag
+HALT_ON_ADVISORY_VIOLATION: true
+HALT_ON_SILENT_INFLUENCE: true
+HALT_ON_ROUTER_DIVERGENCE: true
+
+# =============================================================================
+# PARITY TESTING
+# =============================================================================
+# For CI: verify advisory on/off produces identical router output
+
+PARITY_CHECK_ENABLED: true
+PARITY_FAILURE_RATE_THRESHOLD: 0.01  # 1% of canonical seeds
+
+# =============================================================================
+# GOVERNANCE TRANSITIONS
+# =============================================================================
+# Mode transition governance requirements
+
+MODE_TRANSITION_REQUIRES_COUNCIL: true
+MODE_TRANSITION_REQUIRES_ADMIN_SIGNATURE: true
+MODE_TRANSITION_IS_GOVERNANCE_EVENT: true
+MODE_TRANSITION_IS_REPLAYABLE: true

@@ -43,16 +43,20 @@
 - **Spec Ref:** `docs/specs/SPEC-MEM-001.md`
 
 ### MEM-002: Holistic Memory Saving & Retrieving Validation (E2E)
-- **Status:** 🟡 In Progress
+- **Status:** ✅ Done
 - **Owner:** Solo
-- **Goal:** Validate reliability of MACE's Stage-1 and Stage-2 memory boundaries (saving & retrieving via Profile/Knowledge Agents) with E2E tests, avoiding SQLite locked errors across rapid executions.
+- **Goal:** Validate reliability of MACE's memory pipeline with 14 E2E tests (6 tiers) using real Gemma 3 1B NLU — no mocking.
 - **Acceptance Criteria:**
-  - [ ] MACE correctly maps `profile_store` percept -> commits to semantic DB.
-  - [ ] MACE correctly accesses previously committed value with `profile_recall` percept in a *separate* executor call.
-  - [ ] MACE correctly handles `fact_teach` and `history_search` lifecycle via knowledge agent.
-  - [ ] Rapid sequential execution of saves and retrievals does not raise SQLite `Database is locked`.
-- **Key Files:** `tests/v02_validation/test_memory_retrieval.py`
+  - [x] MACE correctly maps `profile_store` percept -> commits to semantic DB (name, color, location)
+  - [x] MACE correctly accesses previously committed value with `profile_recall` in a *separate* executor call
+  - [x] MACE correctly handles `contact_store`/`contact_recall` for third-party entities
+  - [x] MACE correctly handles `fact_teach` and `history_search` lifecycle via knowledge agent
+  - [x] Episodic memory auto-records interactions and supports keyword search
+  - [x] Knowledge Graph accumulates entity attributes across interactions
+  - [x] Rapid sequential execution of saves and retrievals does not raise SQLite `Database is locked`
+- **Key Files:** `tests/v02_validation/test_memory_retrieval.py`, `src/mace/agents/profile_agent.py`, `src/mace/nlu/ollama_nlu.py`
 - **Spec Ref:** `docs/specs/SPEC-MEM-002.md`
+- **Bugs Fixed:** Profile agent canonical key case sensitivity, NLU few-shot coverage gaps
 
 ---
 

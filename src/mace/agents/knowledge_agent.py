@@ -1,22 +1,62 @@
+"""
+Knowledge Agent - Flexible Fact Storage and Retrieval
+
+Uses intent_parser for flexible understanding.
+Handles:
+- "remember that X is Y" / "note that X means Y"
+- "what is X" / "tell me about X"
+"""
 from mace.core import structures
 from mace.memory import semantic
 
+
 def run(percept):
-    # Knowledge agent is read-only for Stage-0
-    # It tries to find a fact in SEM.
-    # Since we don't have an NLP extractor yet, we rely on exact key lookup 
-    # or just fail gracefully (F1).
+    """Handle knowledge queries using pre-parsed NLU intent."""
+    intent = percept.get("intent", "unknown")
+    entities = percept.get("entities", {})
     
-    # For Stage-0, let's assume we might have some hardcoded mapping or just fail.
-    # The rulebook says: "If query starts with 'what is' ... route to knowledge_agent"
-    # But without an extractor, we can't easily convert "what is ohms law" to "world/fact/ohms_law/definition"
-    # unless we have a mapping.
+    attr = entities.get("attribute") or entities.get("topic")
+    val = entities.get("value")
     
-    # Let's try a naive slugify for the last word(s)?
-    # Or just return F1 as we haven't populated SEM with world facts yet.
+    # ===== TEACH FACT =====
+    if intent in ["fact_teach", "fact_correction"]:
+        if attr and val:
+            key = f"world/fact/general/{attr}"
+            result = semantic.put_sem(key, val, source="agent:knowledge_agent")
+            
+            if result["success"]:
+                return structures.create_agent_output(
+                    agent_id="knowledge_agent",
+                    text=f"Got it! I'll remember that {attr.replace('_', ' ')} is {val}.",
+                    confidence=1.0,
+                    reasoning_trace=f"Stored fact: {key} = {val}"
+                )
     
+    # ===== QUERY FACT =====
+    elif intent in ["history_search", "history_recall", "explainability_request", "fact_recall", "unknown"]:
+        if attr:
+            key = f"world/fact/general/{attr}"
+            result = semantic.get_sem(key)
+            
+            if result["exists"]:
+                return structures.create_agent_output(
+                    agent_id="knowledge_agent",
+                    text=result["value"],
+                    confidence=1.0,
+                    reasoning_trace=f"Found fact: {key}"
+                )
+            else:
+                return structures.create_agent_output(
+                    agent_id="knowledge_agent",
+                    text=f"I don't know about '{attr.replace('_', ' ')}' yet. Teach me with 'remember that X is Y'!",
+                    confidence=0.5,
+                    reasoning_trace=f"Fact not found: {key}"
+                )
+    
+    # Fallback
     return structures.create_agent_output(
         agent_id="knowledge_agent",
-        text="I don’t have that information stored yet. If you want, tell me and I’ll remember it.",
-        confidence=1.0
+        text="I can learn facts! Tell me 'remember that X is Y' or ask 'what is X'.",
+        confidence=0.3,
+        reasoning_trace=f"Intent: {intent}, no action taken"
     )

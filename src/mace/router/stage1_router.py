@@ -1,106 +1,105 @@
+"""
+Stage-1 Deterministic Router (STAGE-0 RULEBOOK Compliant)
+
+Rules:
+- R1: Math detection -> math_agent
+- R2: Fact lookup / Teaching -> knowledge_agent
+- R3: Personal memory / Contacts -> profile_agent
+- R4: Conversation / Fallback -> generic_agent
+
+Spec: docs/STAGE-0_RULEBOOK.md Section 4
+Implementation via New MACE NLU Intents
+"""
+
 import datetime
-import json
 from mace.core import deterministic, canonical
 
-def _score_agents(percept, agents, brainstate):
-    """
-    Score agents based on percept and brainstate.
-    Returns list of (agent, score).
-    """
-    scored = []
-    percept_text = percept.get("text", "").lower()
-    
-    for agent in agents:
-        score = 0.0
-        agent_id = agent["module_id"]
-        capabilities = agent.get("capabilities", [])
-        
-        # Basic capability matching
-        for cap in capabilities:
-            if cap in percept_text:
-                score += 0.5
-                
-        # Heuristic: if 'profile' in text and agent is 'profile_agent'
-        if "profile" in percept_text and "profile" in agent_id:
-            score += 0.8
-            
-        # Intent matching
-        intent = percept.get("intent", "").lower()
-        if intent:
-            if intent == "math" and "math" in agent_id:
-                score += 1.0
-            elif intent == "profile" and "profile" in agent_id:
-                score += 1.0
-            elif intent == "knowledge" and "knowledge" in agent_id:
-                score += 1.0
-                
-        # Default baseline
-        score += 0.1
-        
-        scored.append((agent, score))
-        
-    return scored
 
-def _break_ties(scored_agents):
+def _select_agent_for_intent(intent: str, available_agents: list) -> dict:
     """
-    Break ties deterministically.
-    Sort by Score (desc), then Agent ID (asc).
+    Select agent based on the structured MACE NLU intent.
     """
-    # Sort key: (-score, agent_id)
-    # Python's sort is stable, but we want explicit ordering.
-    scored_agents.sort(key=lambda x: (-x[1], x[0]["module_id"]))
-    return scored_agents
-
-def route(percept, brainstate, available_agents):
-    """
-    Select agents for the given percept.
-    Returns an ExtendedRouterDecision dict.
-    """
-    # 1. Score
-    scored = _score_agents(percept, available_agents, brainstate)
-    
-    # 2. Break Ties
-    ranked = _break_ties(scored)
-    
-    # 3. Select Top K (or threshold)
-    # For Stage-1, select top 1 for simplicity, or all above threshold.
-    # Let's select top 1.
-    selected = []
-    if ranked:
-        winner, score = ranked[0]
-        selected.append({
-            "agent_id": winner["module_id"],
-            "role": "primary",
-            "budget_tokens": 1000 # Default budget
-        })
+    # Map intents to agent IDs
+    intent_map = {
+        # Math
+        "math": "math_agent",
         
-    # 4. Construct Decision Object
-    # Need deterministic ID
-    # Payload for ID: percept_id + selected_agents + timestamp?
-    # Actually, we should use a seed if available.
-    
-    timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    
-    decision_payload = {
-        "percept_id": percept["percept_id"],
-        "selected_agents": selected,
-        "timestamp": timestamp
+        # Profile (User & Contacts & Preferences)
+        "profile_store": "profile_agent",
+        "profile_recall": "profile_agent",
+        "preference_store": "profile_agent",
+        "preference_recall": "profile_agent",
+        "contact_store": "profile_agent",
+        "contact_recall": "profile_agent",
+        "state_inform": "profile_agent",
+        
+        # Knowledge (Facts & History)
+        "fact_teach": "knowledge_agent",
+        "fact_correction": "knowledge_agent",
+        "history_recall": "knowledge_agent",
+        "history_search": "knowledge_agent",
+        "explainability_request": "knowledge_agent",
+        
+        # Task / Action (Fallback to generic_agent for now until there is a task_agent)
+        "task_start": "generic_agent",
+        "reminder_set": "generic_agent",
+        
+        # Conversation
+        "greeting": "generic_agent",
+        "thanks": "generic_agent",
+        "chitchat": "generic_agent",
+        "gibberish": "generic_agent",
+        "unknown": "generic_agent",
     }
     
-    # If we have a job seed, use it.
-    if deterministic.get_seed() is None:
-        deterministic.init_seed("router_fallback")
-        
-    decision_id = deterministic.deterministic_id("router_decision", canonical.canonical_json_serialize(decision_payload))
+    target_id = intent_map.get(intent, "generic_agent")
+    
+    # Find matching agent in available list
+    for agent in available_agents:
+        if target_id in agent.get("module_id", ""):
+            return agent
+            
+    # If specific target not found, try generic
+    if target_id != "generic_agent":
+        for agent in available_agents:
+            if "generic" in agent.get("module_id", ""):
+                return agent
+                
+    return None
+
+
+def route(percept: dict, brainstate: dict, available_agents: list) -> dict:
+    """
+    Stage-1 Deterministic Router.
+    
+    Pipeline:
+    1. Reads parsed intent from percept (populated by executor using ollama_nlu)
+    2. Map intent to agent (R1-R4)
+    3. Construct deterministic decision object
+    """
+    intent = percept.get("intent", "unknown")
+    # For compatibility, assume confidence 1.0 since our NLU output doesn't supply it right now
+    confidence = 1.0
+    
+    # Select agent
+    selected_agent = _select_agent_for_intent(intent, available_agents)
+    
+    # Fallback if really nothing found (shouldn't happen with generic fallback)
+    if not selected_agent:
+        selected_agent = available_agents[0] if available_agents else {}
+    
+    agent_id = selected_agent.get("module_id", "unknown_agent")
+    
+    # Create decision
+    decision_id = deterministic.deterministic_id("decision", percept.get("percept_id", "unknown"))
     
     decision = {
         "decision_id": decision_id,
-        "percept_id": percept["percept_id"],
-        "selected_agents": selected,
-        "depth_level": 1,
-        "memory_strategy": "standard",
-        "created_at": timestamp,
-        "explain": "Deterministic selection based on capability matching."
+        "selected_agents": [{"agent_id": agent_id, "confidence": confidence}],
+        "reasoning": f"Routed based on NLU intent: {intent}",
+        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+        "router_version": "stage1_nlu_v3"
     }
     
+    # Canonicalize
     return decision

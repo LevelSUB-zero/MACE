@@ -1,6 +1,6 @@
 # 🧠 MACE Mission Control — Single Source of Truth
 
-> **Last Updated:** 2026-02-21
+> **Last Updated:** 2026-02-22
 > **Active Stage:** Stage 2 (NLU Parser Pivot)
 > **Overall Project Phase:** Stage 1 COMPLETE → Stage 2 (Active) → Stages 3, 4, 5 Pipeline → Stage 6 (The Organism) = VISION
 
@@ -8,14 +8,15 @@
 
 ## 🚦 Current Focus
 
-### Active Workstream: MEM-002 — Holistic Memory Saving & Retrieving Validation
-**Goal:** Validate reliability of MACE's Stage-1 and Stage-2 memory boundaries (saving & retrieving via Profile/Knowledge Agents) with E2E tests, avoiding SQLite locked errors across rapid executions.
+### Completed Workstream: MEM-002 — Holistic Memory Saving & Retrieving Validation (✅ Done)
+**Goal:** Validate reliability of MACE's Stage-1 and Stage-2 memory boundaries (saving & retrieving via Profile/Knowledge Agents) with E2E tests using real Gemma 3 1B NLU pipeline.
 
 | Task | Status | Key Files |
 |------|--------|-----------|
-| Implement `test_profile_memory_lifecycle` | ⏳ Pending | `tests/v02_validation/test_memory_retrieval.py` |
-| Implement `test_knowledge_memory_lifecycle` | ⏳ Pending | `tests/v02_validation/test_memory_retrieval.py` |
-| Fix `Database locked` SQLite errors if tests fail sequentially | ⏳ Pending | `src/mace/memory/storage_backend.py` |
+| 14 E2E tests across 6 tiers (real NLU) | ✅ Done (14/14 passed) | `tests/v02_validation/test_memory_retrieval.py` |
+| Fix canonical key case bug in profile_agent | ✅ Done | `src/mace/agents/profile_agent.py` |
+| Add 6 NLU few-shot examples | ✅ Done | `src/mace/nlu/ollama_nlu.py` |
+| SQLite rapid write stability verified | ✅ Done | 10 rapid put/get cycles, 0 errors |
 
 ### Blocked / Waiting
 - None currently.

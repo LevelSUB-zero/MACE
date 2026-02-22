@@ -1,0 +1,408 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://mace.ai/schemas/nlu/MemoryAction.json",
+    "title": "MemoryAction",
+    "description": "Hierarchical NLU output for MACE memory system. LLM-proofed with strict validation.",
+    "definitions": {
+        "EntityMap": {
+            "type": "object",
+            "description": "Key-value pairs of extracted entities (strings/integers only for safety)",
+            "additionalProperties": {
+                "type": [
+                    "string",
+                    "integer",
+                    "boolean"
+                ]
+            }
+        },
+        "IntentNode": {
+            "type": "object",
+            "description": "A single intent with entities (leaf node)",
+            "additionalProperties": false,
+            "properties": {
+                "intent": {
+                    "type": "string",
+                    "description": "Intent class name"
+                },
+                "entities": {
+                    "$ref": "#/definitions/EntityMap"
+                }
+            },
+            "required": [
+                "intent"
+            ]
+        },
+        "TriggerAction": {
+            "type": "object",
+            "description": "Conditional structure with trigger and action",
+            "additionalProperties": false,
+            "properties": {
+                "trigger": {
+                    "$ref": "#/definitions/IntentNode"
+                },
+                "action": {
+                    "$ref": "#/definitions/IntentNode"
+                }
+            },
+            "required": [
+                "trigger",
+                "action"
+            ]
+        },
+        "SequenceStep": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "order": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "intent": {
+                    "type": "string"
+                },
+                "memory_target": {
+                    "type": "string",
+                    "enum": [
+                        "wm",
+                        "cwm",
+                        "sem",
+                        "epi",
+                        "none"
+                    ]
+                },
+                "entities": {
+                    "$ref": "#/definitions/EntityMap"
+                },
+                "depends_on": {
+                    "type": "string",
+                    "description": "Reference to previous step output"
+                }
+            },
+            "required": [
+                "order",
+                "intent"
+            ]
+        },
+        "CorrectionStructure": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "operation": {
+                    "type": "string",
+                    "enum": [
+                        "overwrite",
+                        "delete",
+                        "merge"
+                    ]
+                },
+                "target_fact": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "category": {
+                            "type": "string"
+                        },
+                        "attribute": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "attribute"
+                    ]
+                },
+                "old_value": {
+                    "type": [
+                        "string",
+                        "integer",
+                        "boolean"
+                    ]
+                },
+                "new_value": {
+                    "type": [
+                        "string",
+                        "integer",
+                        "boolean",
+                        "object"
+                    ]
+                },
+                "sentiment": {
+                    "type": "string",
+                    "enum": [
+                        "correction",
+                        "update",
+                        "clarification"
+                    ]
+                }
+            },
+            "required": [
+                "operation",
+                "target_fact",
+                "new_value"
+            ]
+        },
+        "MetaStructure": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "target_belief": {
+                    "type": "string"
+                },
+                "query_type": {
+                    "type": "string",
+                    "enum": [
+                        "source_trace",
+                        "confidence",
+                        "reasoning",
+                        "history"
+                    ]
+                }
+            },
+            "required": [
+                "query_type"
+            ]
+        },
+        "ReferenceStructure": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "object_ref": {
+                    "type": "string"
+                },
+                "target_ref": {
+                    "type": "string"
+                },
+                "resolution_strategy": {
+                    "type": "string",
+                    "enum": [
+                        "last_mentioned_noun",
+                        "topic_entity",
+                        "explicit_id",
+                        "user_context"
+                    ]
+                }
+            },
+            "required": [
+                "object_ref",
+                "resolution_strategy"
+            ]
+        }
+    },
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "text": {
+            "type": "string",
+            "description": "Original user input"
+        },
+        "root_intent": {
+            "type": "string",
+            "description": "Primary intent classification",
+            "enum": [
+                "profile_store",
+                "profile_recall",
+                "preference_store",
+                "preference_recall",
+                "contact_store",
+                "contact_recall",
+                "fact_teach",
+                "fact_correction",
+                "task_start",
+                "task_update",
+                "task_status",
+                "reminder_set",
+                "automation_set",
+                "state_inform",
+                "context_refer",
+                "clarification",
+                "continuation",
+                "history_recall",
+                "history_search",
+                "user_action_recall",
+                "explainability_request",
+                "sequence",
+                "item_move",
+                "math",
+                "chitchat",
+                "greeting",
+                "thanks",
+                "gibberish",
+                "command_nav",
+                "unknown"
+            ]
+        },
+        "memory_type": {
+            "type": "string",
+            "description": "Target memory system",
+            "enum": [
+                "wm",
+                "cwm",
+                "sem",
+                "epi",
+                "mixed",
+                "none"
+            ]
+        },
+        "complexity": {
+            "type": "string",
+            "description": "Structural complexity type",
+            "enum": [
+                "atomic",
+                "conditional",
+                "compound",
+                "update",
+                "meta",
+                "reference_heavy"
+            ]
+        },
+        "entities": {
+            "$ref": "#/definitions/EntityMap",
+            "description": "For atomic intents, flat entity extraction"
+        },
+        "structure": {
+            "description": "For complex intents (conditional, update, meta, reference_heavy)"
+        },
+        "steps": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/SequenceStep"
+            },
+            "description": "For compound/sequence intents only"
+        }
+    },
+    "required": [
+        "text",
+        "root_intent",
+        "memory_type",
+        "complexity"
+    ],
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "complexity": {
+                        "const": "atomic"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "entities"
+                ],
+                "not": {
+                    "anyOf": [
+                        {
+                            "required": [
+                                "structure"
+                            ]
+                        },
+                        {
+                            "required": [
+                                "steps"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "complexity": {
+                        "const": "conditional"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "structure"
+                ],
+                "properties": {
+                    "structure": {
+                        "$ref": "#/definitions/TriggerAction"
+                    }
+                },
+                "not": {
+                    "required": [
+                        "steps"
+                    ]
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "complexity": {
+                        "const": "compound"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "steps"
+                ],
+                "not": {
+                    "required": [
+                        "structure"
+                    ]
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "complexity": {
+                        "const": "update"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "structure"
+                ],
+                "properties": {
+                    "structure": {
+                        "$ref": "#/definitions/CorrectionStructure"
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "complexity": {
+                        "const": "meta"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "structure"
+                ],
+                "properties": {
+                    "structure": {
+                        "$ref": "#/definitions/MetaStructure"
+                    }
+                }
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "complexity": {
+                        "const": "reference_heavy"
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "structure"
+                ],
+                "properties": {
+                    "structure": {
+                        "$ref": "#/definitions/ReferenceStructure"
+                    }
+                }
+            }
+        }
+    ]
+}

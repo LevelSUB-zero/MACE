@@ -921,6 +921,9 @@
         "identity": {
           "type": "string"
         },
+        "immutable_core_hash": {
+          "type": "string"
+        },
         "modules": {
           "type": "array",
           "items": {

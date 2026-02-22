@@ -5,10 +5,35 @@ Handles save/load of brain state snapshots to/from database.
 import json
 from mace.core import persistence, canonical
 
+_table_initialized = False
+
+def _ensure_table_exists():
+    """Create brainstate_snapshots table if it doesn't exist."""
+    global _table_initialized
+    if _table_initialized:
+        return
+    
+    conn = persistence.get_connection()
+    try:
+        persistence.execute_query(conn, """
+            CREATE TABLE IF NOT EXISTS brainstate_snapshots (
+                snapshot_id TEXT PRIMARY KEY,
+                job_seed TEXT,
+                brainstate_json TEXT,
+                created_at TEXT,
+                tick_count INTEGER
+            )
+        """)
+        conn.commit()
+        _table_initialized = True
+    finally:
+        conn.close()
+
 def save_snapshot(brainstate):
     """
     Persist BrainState snapshot to database.
     """
+    _ensure_table_exists()
     conn = persistence.get_connection()
     try:
         snapshot_id = brainstate["snapshot_id"]
@@ -34,6 +59,7 @@ def load_latest_snapshot(job_seed=None):
     Load the most recent BrainState snapshot, optionally filtered by job_seed.
     Returns None if no snapshots exist.
     """
+    _ensure_table_exists()
     conn = persistence.get_connection()
     try:
         if job_seed:

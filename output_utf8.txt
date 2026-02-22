@@ -1,0 +1,92 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-8.4.2, pluggy-1.6.0 -- C:\Users\USER\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe
+cachedir: .pytest_cache
+rootdir: F:\MAIN PROJECTS\Mace
+plugins: anyio-4.10.0, langsmith-0.4.21, asyncio-1.2.0, cov-7.0.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 3 items
+
+tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_concurrent_or_rapid_sqlite_writes FAILED [ 33%]
+tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_knowledge_memory_lifecycle FAILED [ 66%]
+tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_profile_memory_lifecycle FAILED [100%]
+
+================================== FAILURES ===================================
+_________ TestMemoryRetrieval.test_concurrent_or_rapid_sqlite_writes __________
+
+self = <test_memory_retrieval.TestMemoryRetrieval testMethod=test_concurrent_or_rapid_sqlite_writes>
+
+    def test_concurrent_or_rapid_sqlite_writes(self):
+        """
+        Test that rapid sequential API saves/retrievals do not cause SQLite locking
+        or file contention errors, which have been historically fragile on Windows.
+        """
+        for i in range(10):
+            key = f"world/fact/test_rapid_{i}"
+            val = f"value_{i}"
+    
+            # Rapid writes
+            res_put = semantic.put_sem(key, val)
+>           self.assertTrue(res_put["success"])
+E           AssertionError: False is not true
+
+tests\v02_validation\test_memory_retrieval.py:129: AssertionError
+_____________ TestMemoryRetrieval.test_knowledge_memory_lifecycle _____________
+
+self = <test_memory_retrieval.TestMemoryRetrieval testMethod=test_knowledge_memory_lifecycle>
+
+    def test_knowledge_memory_lifecycle(self):
+        """
+        Test that KnowledgeAgent can save a factual attribute and subsequently retrieve it
+        in a separate execution cycle.
+        """
+        output1, _ = executor.execute("remember that Paris is the capital of France", seed=self.job_seed)
+        self.assertIn("Paris", output1["text"])
+        self.assertIn("France", output1["text"])
+    
+        res = semantic.get_sem("world/fact/paris")
+        # Just to ensure something was written; exactly what NLU parsed might vary slightly,
+        # but semantic should exist.
+>       self.assertTrue(res["exists"])
+E       AssertionError: False is not true
+
+tests\v02_validation\test_memory_retrieval.py:111: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[NLU] Ollama not running at http://localhost:11434
+No trained model found at f:\MAIN PROJECTS\Mace\models\nlu\classifier.pkl
+DEBUG: Running agent profile_agent with percept remember that Paris is the capital of France (timeout: 30.0s)
+DEBUG: Agent output: {'agent_id': 'profile_agent', 'text': "Noted! Paris's role is the capital of France.", 'confidence': 1.0, 'reasoning_trace': 'Stored contact: user/contacts/paris/role = the capital of France', 'raw_output': "Noted! Paris's role is the capital of France."}
+______________ TestMemoryRetrieval.test_profile_memory_lifecycle ______________
+
+self = <test_memory_retrieval.TestMemoryRetrieval testMethod=test_profile_memory_lifecycle>
+
+    def test_profile_memory_lifecycle(self):
+        """
+        Test that ProfileAgent can save an attribute and subsequently retrieve it
+        in a separate execution cycle.
+        """
+        # Cycle 1: Store the attribute
+        # NLU mapped "store my name as Alice" -> intent: profile_store, entities: {attribute: name, value: Alice}
+        output1, log1 = executor.execute("store my name as Alice", seed=self.job_seed)
+    
+        # Verify it routed correctly and claim of storage
+        self.assertEqual(log1["router_decision"]["selected_agents"][0]["agent_id"], "profile_agent")
+>       self.assertIn("Alice", output1["text"])
+E       AssertionError: 'Alice' not found in "I can remember things about you! Try 'my name is X' or ask 'what is my name'."
+
+tests\v02_validation\test_memory_retrieval.py:75: AssertionError
+---------------------------- Captured stdout call -----------------------------
+[NLU] Ollama not running at http://localhost:11434
+DEBUG: Running agent profile_agent with percept store my name as Alice (timeout: 30.0s)
+DEBUG: Agent output: {'agent_id': 'profile_agent', 'text': "I can remember things about you! Try 'my name is X' or ask 'what is my name'.", 'confidence': 0.3, 'reasoning_trace': 'Intent: profile_store, no action taken', 'raw_output': "I can remember things about you! Try 'my name is X' or ask 'what is my name'."}
+============================== warnings summary ===============================
+tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_knowledge_memory_lifecycle
+tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_profile_memory_lifecycle
+  f:\MAIN PROJECTS\Mace\src\mace\router\stage1_router.py:100: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_concurrent_or_rapid_sqlite_writes
+FAILED tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_knowledge_memory_lifecycle
+FAILED tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_profile_memory_lifecycle
+======================= 3 failed, 2 warnings in 14.12s ========================

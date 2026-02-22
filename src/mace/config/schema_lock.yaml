@@ -1,0 +1,153 @@
+# MACE Configuration Schema Lock
+# Generated: 2026-02-07
+# Stage: 3 (Advisory Council)
+#
+# This file defines the FROZEN schema for all Stage 0-3 configurations.
+# Any deviation from these values requires governance approval.
+# See: docs/STAGE-0_RULEBOOK.md Section 6
+
+schema_lock_version: "3.0.0-stable"
+locked_at: "2026-02-07T13:31:00Z"
+locked_by: "stage3_refinement_sprint"
+
+# =============================================================================
+# LIMITS SCHEMA (limits.yaml)
+# =============================================================================
+limits:
+  # Quotas
+  max_evidence_size_bytes: 16384
+  max_log_entry_size_bytes: 1048576
+  max_steps_per_request: 50
+  max_tokens_per_request: 8192
+  max_wm_items: 7
+  max_cwm_items: 20
+  apt_penalty_timeout_seconds: 300
+  
+  # Stage-1
+  wm_capacity: 7
+  wm_ttl_ticks: 10
+  attention_decay: 0.9
+  default_token_budget: 1000
+  
+  # Stage-0 Failure Handling
+  agent_timeout_ms: 30000
+
+# =============================================================================
+# STAGE-2 SCHEMA (stage2.yaml)
+# =============================================================================
+stage2:
+  MEM_LEARNING_MODE: shadow
+  SHADOW_TABLE: mem_snn_shadow_predictions
+  DIVERGENCE_TABLE: mem_snn_divergence_log
+  EVENT_LOG_TABLE: stage2_events
+  EVENT_SCHEMA_VERSION: "2.0"
+  CANDIDATE_FEATURES:
+    - frequency
+    - consistency
+    - recency
+    - source_diversity
+    - semantic_novelty
+    - governance_conflict_flag
+  STAGE2_KILLSWITCH_FILE: mace_stage2_killswitch.flag
+  HALT_ON_SHADOW_VIOLATION: true
+
+# =============================================================================
+# STAGE-3 SCHEMA (stage3.yaml)
+# =============================================================================
+stage3:
+  MEM_LEARNING_MODE: advisory
+  ADVISORY_TABLE: stage3_advisory_outputs
+  META_OBSERVATION_TABLE: stage3_meta_observations
+  DIVERGENCE_TABLE: stage3_divergence_log
+  SHADOW_TABLE: mem_snn_shadow_predictions
+  EVENT_LOG_TABLE: stage3_events
+  EVENT_SCHEMA_VERSION: "3.0"
+  
+  ALLOWED_ADVICE_TYPES:
+    - routing_suggestion
+    - risk_note
+    - confidence_annotation
+    - similarity_hint
+    - anomaly_report
+    - retrospective_summary
+    - suggested_test
+    - human_action_recommendation
+  
+  CONTAINMENT_INVARIANTS:
+    TEMPORAL_CONTAINMENT: true
+    PERSISTENCE_CONTAINMENT: true
+    SEMANTIC_CONTAINMENT: true
+    INTERPRETABILITY_LOCK: true
+  
+  KILLSWITCH:
+    STAGE3_KILLSWITCH_FILE: mace_stage3_killswitch.flag
+    HALT_ON_ADVISORY_VIOLATION: true
+    HALT_ON_SILENT_INFLUENCE: true
+    HALT_ON_ROUTER_DIVERGENCE: true
+  
+  PARITY:
+    PARITY_CHECK_ENABLED: true
+    PARITY_FAILURE_RATE_THRESHOLD: 0.01
+
+# =============================================================================
+# DATABASE SCHEMAS
+# =============================================================================
+database_tables:
+  sem_kv:
+    columns:
+      - canonical_key: TEXT PRIMARY KEY
+      - value: TEXT
+      - last_updated: TEXT
+  
+  brainstate_snapshots:
+    columns:
+      - snapshot_id: TEXT PRIMARY KEY
+      - job_seed: TEXT
+      - brainstate_json: TEXT
+      - created_at: TEXT
+      - tick_count: INTEGER
+  
+  reflective_logs:
+    columns:
+      - log_id: TEXT PRIMARY KEY
+      - log_json: TEXT
+      - immutable_subpayload: TEXT
+      - signature: TEXT
+      - signature_key_id: TEXT
+      - created_at: TEXT
+
+# =============================================================================
+# ROUTER RULES (FROZEN)
+# =============================================================================
+router_rules:
+  R1_math:
+    symbols: ["+", "-", "*", "/", "^", "∫", "∑", "dx"]
+    phrases: ["solve", "calculate", "integrate", "compute", "evaluate"]
+    routes_to: math_agent
+  
+  R2_fact:
+    prefixes: ["what is", "define", "who is", "when was", "where is", "what are"]
+    routes_to: knowledge_agent
+  
+  R3_personal:
+    trigger: "my " # must contain "my " AND a known attribute
+    attributes: ["favorite", "favourite", "name", "color", "colour", "age", "job", "birthday"]
+    routes_to: profile_agent
+  
+  R4_fallback:
+    routes_to: generic_agent
+
+# =============================================================================
+# GOVERNANCE CONSTRAINTS
+# =============================================================================
+governance:
+  # These values CANNOT change without governance approval
+  immutable_until_stage4:
+    - limits.agent_timeout_ms
+    - stage2.MEM_LEARNING_MODE
+    - stage3.CONTAINMENT_INVARIANTS
+    - router_rules.R1_math
+    - router_rules.R2_fact
+    - router_rules.R3_personal
+    - router_rules.R4_fallback
+    - database_tables

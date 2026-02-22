@@ -1,0 +1,452 @@
+{
+    "title": "MemoryAction Training Data Schema",
+    "description": "Complete schema reference for generating NLU training data. LLM-proofed with strict validation.",
+    "definitions": {
+        "EntityMap": {
+            "type": "object",
+            "description": "Key-value pairs of extracted entities (strings/integers/booleans only)",
+            "allowed_value_types": [
+                "string",
+                "integer",
+                "boolean"
+            ],
+            "no_arrays": true,
+            "no_nested_objects": true,
+            "no_null": true
+        },
+        "IntentNode": {
+            "description": "A single intent with entities (leaf node for trigger/action)",
+            "fields": {
+                "intent": {
+                    "type": "string",
+                    "required": true,
+                    "description": "Intent class name"
+                },
+                "entities": {
+                    "type": "EntityMap",
+                    "required": false
+                }
+            },
+            "no_extra_fields": true
+        },
+        "TriggerAction": {
+            "description": "Conditional structure with trigger and action (for complexity=conditional)",
+            "fields": {
+                "trigger": {
+                    "type": "IntentNode",
+                    "required": true
+                },
+                "action": {
+                    "type": "IntentNode",
+                    "required": true
+                }
+            },
+            "no_extra_fields": true
+        },
+        "SequenceStep": {
+            "description": "One step in a compound sequence (for complexity=compound)",
+            "fields": {
+                "order": {
+                    "type": "integer",
+                    "required": true,
+                    "minimum": 1
+                },
+                "intent": {
+                    "type": "string",
+                    "required": true
+                },
+                "memory_target": {
+                    "type": "enum",
+                    "required": false,
+                    "values": [
+                        "wm",
+                        "cwm",
+                        "sem",
+                        "epi",
+                        "none"
+                    ]
+                },
+                "entities": {
+                    "type": "EntityMap",
+                    "required": false
+                },
+                "depends_on": {
+                    "type": "string",
+                    "required": false,
+                    "description": "Reference to previous step output"
+                }
+            },
+            "no_extra_fields": true
+        },
+        "CorrectionStructure": {
+            "description": "Correction/overwrite structure (for complexity=update)",
+            "fields": {
+                "operation": {
+                    "type": "enum",
+                    "required": true,
+                    "values": [
+                        "overwrite",
+                        "delete",
+                        "merge"
+                    ]
+                },
+                "target_fact": {
+                    "type": "object",
+                    "required": true,
+                    "fields": {
+                        "category": {
+                            "type": "string",
+                            "required": false
+                        },
+                        "attribute": {
+                            "type": "string",
+                            "required": true
+                        }
+                    },
+                    "no_extra_fields": true
+                },
+                "old_value": {
+                    "type": [
+                        "string",
+                        "integer",
+                        "boolean"
+                    ],
+                    "required": false
+                },
+                "new_value": {
+                    "type": [
+                        "string",
+                        "integer",
+                        "boolean",
+                        "object"
+                    ],
+                    "required": true
+                },
+                "sentiment": {
+                    "type": "enum",
+                    "required": false,
+                    "values": [
+                        "correction",
+                        "update",
+                        "clarification"
+                    ]
+                }
+            },
+            "no_extra_fields": true
+        },
+        "MetaStructure": {
+            "description": "Meta-cognition query structure (for complexity=meta)",
+            "fields": {
+                "target_belief": {
+                    "type": "string",
+                    "required": false
+                },
+                "query_type": {
+                    "type": "enum",
+                    "required": true,
+                    "values": [
+                        "source_trace",
+                        "confidence",
+                        "reasoning",
+                        "history"
+                    ]
+                }
+            },
+            "no_extra_fields": true
+        },
+        "ReferenceStructure": {
+            "description": "Reference resolution structure (for complexity=reference_heavy)",
+            "fields": {
+                "object_ref": {
+                    "type": "string",
+                    "required": true,
+                    "description": "The pronoun or reference word"
+                },
+                "target_ref": {
+                    "type": "string",
+                    "required": false,
+                    "description": "Target location if applicable"
+                },
+                "resolution_strategy": {
+                    "type": "enum",
+                    "required": true,
+                    "values": [
+                        "last_mentioned_noun",
+                        "topic_entity",
+                        "explicit_id",
+                        "user_context"
+                    ]
+                }
+            },
+            "no_extra_fields": true
+        }
+    },
+    "root_object": {
+        "no_extra_fields": true,
+        "fields": {
+            "text": {
+                "type": "string",
+                "required": true,
+                "description": "Original user input"
+            },
+            "root_intent": {
+                "type": "enum",
+                "required": true,
+                "description": "Primary intent classification",
+                "values": [
+                    "profile_store",
+                    "profile_recall",
+                    "preference_store",
+                    "preference_recall",
+                    "contact_store",
+                    "contact_recall",
+                    "fact_teach",
+                    "fact_correction",
+                    "task_start",
+                    "task_update",
+                    "task_status",
+                    "reminder_set",
+                    "automation_set",
+                    "state_inform",
+                    "context_refer",
+                    "clarification",
+                    "continuation",
+                    "history_recall",
+                    "history_search",
+                    "user_action_recall",
+                    "explainability_request",
+                    "sequence",
+                    "item_move",
+                    "math",
+                    "chitchat",
+                    "greeting",
+                    "thanks",
+                    "gibberish",
+                    "command_nav",
+                    "unknown"
+                ]
+            },
+            "memory_type": {
+                "type": "enum",
+                "required": true,
+                "description": "Target memory system",
+                "values": [
+                    "wm",
+                    "cwm",
+                    "sem",
+                    "epi",
+                    "mixed",
+                    "none"
+                ]
+            },
+            "complexity": {
+                "type": "enum",
+                "required": true,
+                "description": "Structural complexity type",
+                "values": [
+                    "atomic",
+                    "conditional",
+                    "compound",
+                    "update",
+                    "meta",
+                    "reference_heavy"
+                ]
+            },
+            "entities": {
+                "type": "EntityMap",
+                "required": "ONLY when complexity=atomic",
+                "description": "For atomic intents, flat entity extraction"
+            },
+            "structure": {
+                "type": "varies by complexity",
+                "required": "when complexity is conditional|update|meta|reference_heavy",
+                "description": "For complex intents"
+            },
+            "steps": {
+                "type": "array of SequenceStep",
+                "required": "ONLY when complexity=compound",
+                "description": "For compound/sequence intents only"
+            }
+        }
+    },
+    "conditional_rules": [
+        {
+            "if": {
+                "complexity": "atomic"
+            },
+            "then": {
+                "required": [
+                    "entities"
+                ],
+                "forbidden": [
+                    "structure",
+                    "steps"
+                ]
+            }
+        },
+        {
+            "if": {
+                "complexity": "conditional"
+            },
+            "then": {
+                "required": [
+                    "structure"
+                ],
+                "structure_type": "TriggerAction",
+                "forbidden": [
+                    "steps"
+                ]
+            }
+        },
+        {
+            "if": {
+                "complexity": "compound"
+            },
+            "then": {
+                "required": [
+                    "steps"
+                ],
+                "forbidden": [
+                    "structure"
+                ]
+            }
+        },
+        {
+            "if": {
+                "complexity": "update"
+            },
+            "then": {
+                "required": [
+                    "structure"
+                ],
+                "structure_type": "CorrectionStructure"
+            }
+        },
+        {
+            "if": {
+                "complexity": "meta"
+            },
+            "then": {
+                "required": [
+                    "structure"
+                ],
+                "structure_type": "MetaStructure"
+            }
+        },
+        {
+            "if": {
+                "complexity": "reference_heavy"
+            },
+            "then": {
+                "required": [
+                    "structure"
+                ],
+                "structure_type": "ReferenceStructure"
+            }
+        }
+    ],
+    "examples": {
+        "atomic": {
+            "text": "My name is Bob",
+            "root_intent": "profile_store",
+            "memory_type": "sem",
+            "complexity": "atomic",
+            "entities": {
+                "attribute": "name",
+                "value": "Bob"
+            }
+        },
+        "atomic_rejection": {
+            "text": "Hello there",
+            "root_intent": "greeting",
+            "memory_type": "none",
+            "complexity": "atomic",
+            "entities": {}
+        },
+        "conditional": {
+            "text": "Remind me to buy milk when I am at Tesco",
+            "root_intent": "automation_set",
+            "memory_type": "wm",
+            "complexity": "conditional",
+            "structure": {
+                "trigger": {
+                    "intent": "location_detect",
+                    "entities": {
+                        "location": "Tesco",
+                        "condition": "at"
+                    }
+                },
+                "action": {
+                    "intent": "reminder_notify",
+                    "entities": {
+                        "item": "milk",
+                        "action": "buy"
+                    }
+                }
+            }
+        },
+        "compound": {
+            "text": "Save this file and email it to Bob",
+            "root_intent": "sequence",
+            "memory_type": "mixed",
+            "complexity": "compound",
+            "steps": [
+                {
+                    "order": 1,
+                    "intent": "file_save",
+                    "memory_target": "sem",
+                    "entities": {
+                        "target": "current_file"
+                    }
+                },
+                {
+                    "order": 2,
+                    "intent": "email_send",
+                    "memory_target": "wm",
+                    "entities": {
+                        "recipient": "Bob",
+                        "content_source": "step_1_output"
+                    }
+                }
+            ]
+        },
+        "update": {
+            "text": "No, actually, I moved. My new address is in Seattle.",
+            "root_intent": "fact_correction",
+            "memory_type": "sem",
+            "complexity": "update",
+            "structure": {
+                "operation": "overwrite",
+                "target_fact": {
+                    "category": "user_profile",
+                    "attribute": "address"
+                },
+                "new_value": {
+                    "city": "Seattle"
+                },
+                "sentiment": "correction"
+            }
+        },
+        "meta": {
+            "text": "Why did you think I liked horror movies?",
+            "root_intent": "explainability_request",
+            "memory_type": "epi",
+            "complexity": "meta",
+            "structure": {
+                "target_belief": "user_likes_horror_movies",
+                "query_type": "source_trace"
+            }
+        },
+        "reference_heavy": {
+            "text": "Put that in the other folder",
+            "root_intent": "item_move",
+            "memory_type": "cwm",
+            "complexity": "reference_heavy",
+            "structure": {
+                "object_ref": "that",
+                "target_ref": "other folder",
+                "resolution_strategy": "last_mentioned_noun"
+            }
+        }
+    }
+}

@@ -3,10 +3,36 @@ import datetime
 import copy
 from mace.core import persistence, deterministic, canonical, signing
 
+_table_initialized = False
+
+def _ensure_table_exists():
+    """Create reflective_logs table if it doesn't exist."""
+    global _table_initialized
+    if _table_initialized:
+        return
+    
+    conn = persistence.get_connection()
+    try:
+        persistence.execute_query(conn, """
+            CREATE TABLE IF NOT EXISTS reflective_logs (
+                log_id TEXT PRIMARY KEY,
+                log_json TEXT,
+                immutable_subpayload TEXT,
+                signature TEXT,
+                signature_key_id TEXT,
+                created_at TEXT
+            )
+        """)
+        conn.commit()
+        _table_initialized = True
+    finally:
+        conn.close()
+
 def write_log(log_entry):
     """
     Write a reflective log entry with signing.
     """
+    _ensure_table_exists()
     conn = persistence.get_connection()
     try:
         # 1. Prepare Immutable Subpayload

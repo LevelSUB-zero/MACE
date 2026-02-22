@@ -1,1 +1,4 @@
-version: "1.1-stage1"
+# Schema Version (LOCKED)
+version: "3.0.0-stage3"
+locked: true
+lock_hash_required: true

@@ -1,0 +1,91 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-8.4.2, pluggy-1.6.0 -- C:\Users\USER\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\python.exe
+cachedir: .pytest_cache
+rootdir: F:\MAIN PROJECTS\Mace
+plugins: anyio-4.10.0, langsmith-0.4.21, asyncio-1.2.0, cov-7.0.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 3 items
+
+tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_concurrent_or_rapid_sqlite_writes FAILED [ 33%]
+tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_knowledge_memory_lifecycle FAILED [ 66%]
+tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_profile_memory_lifecycle PASSED [100%]
+
+================================== FAILURES ===================================
+_________ TestMemoryRetrieval.test_concurrent_or_rapid_sqlite_writes __________
+
+self = <test_memory_retrieval.TestMemoryRetrieval testMethod=test_concurrent_or_rapid_sqlite_writes>
+
+    def test_concurrent_or_rapid_sqlite_writes(self):
+        """
+        Test that rapid sequential API saves/retrievals do not cause SQLite locking
+        or file contention errors, which have been historically fragile on Windows.
+        """
+        for i in range(10):
+            # Must strictly follow the 4-segment semantic key rule: category/subcategory/namespace/name
+            key = f"world/fact/rapid/test_rapid_{i}"
+            val = f"value_{i}"
+    
+            # Rapid writes
+            res_put = semantic.put_sem(key, val)
+            self.assertTrue(res_put["success"])
+    
+            # Rapid reads
+            res_get = semantic.get_sem(key)
+            self.assertTrue(res_get["exists"])
+            self.assertEqual(res_get["value"], val)
+    
+            # Mix in an episodic write
+            import mace.memory.episodic as eps
+            em = eps.EpisodicMemory(job_seed=f"rapid_seed_{i}")
+            em.record_interaction(f"percept {i}", f"response {i}", "test_agent")
+    
+            # Mix in a reflective write
+>           writer.log_execution(
+            ^^^^^^^^^^^^^^^^^^^^
+                job_seed=f"rapid_seed_{i}",
+                percept_text=f"percept {i}",
+                output={"text": val},
+                metadata={}
+            )
+E           AttributeError: module 'mace.reflective.writer' has no attribute 'log_execution'
+
+tests\v02_validation\test_memory_retrieval.py:181: AttributeError
+_____________ TestMemoryRetrieval.test_knowledge_memory_lifecycle _____________
+
+self = <test_memory_retrieval.TestMemoryRetrieval testMethod=test_knowledge_memory_lifecycle>
+
+    def test_knowledge_memory_lifecycle(self):
+        """
+        Test that KnowledgeAgent can save a factual attribute and subsequently retrieve it
+        in a separate execution cycle.
+        """
+        import mace.nlu.ollama_nlu as ollama_nlu
+        original_parse = ollama_nlu.parse
+        try:
+            ollama_nlu.parse = lambda text: {
+                "root_intent": "fact_teach",
+                "entities": {"attribute": "paris", "value": "the capital of France"},
+                "confidence": 1.0,
+                "_source": "ollama",
+                "complexity": "atomic"
+            }
+            output1, _ = executor.execute("remember that Paris is the capital of France", seed=self.job_seed)
+>           self.assertIn("Paris", output1["text"])
+E           AssertionError: 'Paris' not found in "I can learn facts! Tell me 'remember that X is Y' or ask 'what is X'."
+
+tests\v02_validation\test_memory_retrieval.py:136: AssertionError
+---------------------------- Captured stdout call -----------------------------
+DEBUG: Running agent knowledge_agent with percept remember that Paris is the capital of France (timeout: 30.0s)
+DEBUG: Agent output: {'agent_id': 'knowledge_agent', 'text': "I can learn facts! Tell me 'remember that X is Y' or ask 'what is X'.", 'confidence': 0.3, 'reasoning_trace': 'Intent: fact_teach, no action taken', 'raw_output': "I can learn facts! Tell me 'remember that X is Y' or ask 'what is X'."}
+============================== warnings summary ===============================
+tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_knowledge_memory_lifecycle
+tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_profile_memory_lifecycle
+tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_profile_memory_lifecycle
+  f:\MAIN PROJECTS\Mace\src\mace\router\stage1_router.py:100: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_concurrent_or_rapid_sqlite_writes
+FAILED tests/v02_validation/test_memory_retrieval.py::TestMemoryRetrieval::test_knowledge_memory_lifecycle
+=================== 2 failed, 1 passed, 3 warnings in 6.80s ===================

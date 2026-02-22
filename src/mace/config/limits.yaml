@@ -12,3 +12,6 @@ wm_capacity: 7
 wm_ttl_ticks: 10
 attention_decay: 0.9
 default_token_budget: 1000
+
+# Stage-0 Failure Handling (Rule F4)
+agent_timeout_ms: 30000

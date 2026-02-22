@@ -28,6 +28,42 @@ class StorageBackend:
                 last_updated TEXT
             )
         """)
+        
+        # BrainState snapshots table (required by executor)
+        self.conn.execute("""
+            CREATE TABLE IF NOT EXISTS brainstate_snapshots (
+                snapshot_id TEXT PRIMARY KEY,
+                job_seed TEXT,
+                brainstate_json TEXT,
+                created_at TEXT,
+                tick_count INTEGER
+            )
+        """)
+        
+        # CWM (Contextual Working Memory) table
+        self.conn.execute("""
+            CREATE TABLE IF NOT EXISTS cwm_items (
+                item_id TEXT PRIMARY KEY,
+                job_seed TEXT,
+                content_json TEXT,
+                source_wm_id TEXT,
+                priority REAL DEFAULT 1.0,
+                created_at TEXT,
+                expires_at TEXT
+            )
+        """)
+        
+        # Episodic Memory table
+        self.conn.execute("""
+            CREATE TABLE IF NOT EXISTS episodic (
+                episodic_id TEXT PRIMARY KEY,
+                job_seed TEXT,
+                summary TEXT,
+                payload_json TEXT,
+                source_cwm_ids TEXT,
+                created_at TEXT
+            )
+        """)
         self.conn.commit()
 
     def put(self, key, value, timestamp):
