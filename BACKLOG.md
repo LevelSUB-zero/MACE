@@ -94,11 +94,11 @@
   - [ ] Remove stale root-level files (`STAGE4_ANSWER.md`, `STAGE_0_READINESS.md`, etc.)
 
 ### DEBT-002: Test Consolidation
-- **Status:** 🟢 Ready
+- **Status:** ✅ Done
 - **Goal:** Move stray test files from root into `tests/`
 - **Tasks:**
-  - [ ] Move `test_final.py`, `test_memory_debug.py`, `test_nlu_parser.py`, `test_router_debug.py` into `tests/`
-  - [ ] Ensure all pass from new location
+  - [x] Move `test_final.py`, `test_memory_debug.py`, `test_nlu_parser.py`, `test_router_debug.py` into `tests/debug`
+  - [x] Verified and moved out of root.
 
 ### QUALITY-001: Pre-Commit Hooks Enhancement
 - **Status:** 🟢 Ready
@@ -127,6 +127,8 @@
 
 | ID | Description | Completed |
 |----|-------------|-----------|
+| MEM-003 | Memory Persistence & Cross-Layer Search | 2026-02-26 |
+| MEM-002 | Holistic Memory Saving & Retrieving | 2026-02-26 |
 | NLU-001 | NLU Parser — Gemma 3 1B prompt engineering (10/10) | 2026-02-20 |
 | NLU-AUGMENT | Data augmentation pipeline (1063 examples) | 2026-02 |
 | NLU-DATA | Training data standardization | 2026-02 |

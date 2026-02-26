@@ -1,6 +1,6 @@
 # 🧠 MACE Mission Control — Single Source of Truth
 
-> **Last Updated:** 2026-02-22
+> **Last Updated:** 2026-02-26
 > **Active Stage:** Stage 2 (NLU Parser Pivot)
 > **Overall Project Phase:** Stage 1 COMPLETE → Stage 2 (Active) → Stages 3, 4, 5 Pipeline → Stage 6 (The Organism) = VISION
 
@@ -8,15 +8,15 @@
 
 ## 🚦 Current Focus
 
-### Completed Workstream: MEM-002 — Holistic Memory Saving & Retrieving Validation (✅ Done)
-**Goal:** Validate reliability of MACE's Stage-1 and Stage-2 memory boundaries (saving & retrieving via Profile/Knowledge Agents) with E2E tests using real Gemma 3 1B NLU pipeline.
+### Completed Workstream: MEM-003 — Memory Persistence & Search (✅ Done)
+**Goal:** Validate memory persistence across simulator shutdown and cross-layer entity search.
 
 | Task | Status | Key Files |
 |------|--------|-----------|
-| 14 E2E tests across 6 tiers (real NLU) | ✅ Done (14/14 passed) | `tests/v02_validation/test_memory_retrieval.py` |
-| Fix canonical key case bug in profile_agent | ✅ Done | `src/mace/agents/profile_agent.py` |
-| Add 6 NLU few-shot examples | ✅ Done | `src/mace/nlu/ollama_nlu.py` |
-| SQLite rapid write stability verified | ✅ Done | 10 rapid put/get cycles, 0 errors |
+| Add `search_keys()` to storage backend | ✅ Done | `src/mace/memory/storage_backend.py` |
+| Add `search_sem()` wrapper | ✅ Done | `src/mace/memory/semantic.py` |
+| Write & pass 5 E2E persistence tests | ✅ Done | `tests/v02_validation/test_memory_persistence.py` |
+| NLU Dead Code Quarantine | ✅ Done | `archive/` created, 50+ files moved |
 
 ### Blocked / Waiting
 - None currently.

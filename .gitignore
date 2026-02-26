@@ -21,3 +21,4 @@ build/
 check_step_*.py
 
 *.log
+/archive/

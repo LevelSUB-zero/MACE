@@ -95,5 +95,25 @@ class StorageBackend:
             return row[0], row[1]
         return None, None
 
+    def search_keys(self, query, limit=50):
+        """
+        Search for keys containing the query string.
+        
+        Args:
+            query: Substring to search for in canonical keys and values
+            limit: Maximum results
+            
+        Returns:
+            List of (canonical_key, value, last_updated) tuples
+        """
+        cursor = self.conn.execute("""
+            SELECT canonical_key, value, last_updated
+            FROM sem_kv
+            WHERE canonical_key LIKE ? OR value LIKE ?
+            ORDER BY last_updated DESC
+            LIMIT ?
+        """, (f"%{query}%", f"%{query}%", limit))
+        return cursor.fetchall()
+
     def close(self):
         self.conn.close()

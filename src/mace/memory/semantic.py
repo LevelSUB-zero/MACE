@@ -32,6 +32,12 @@ class LiveSEMStore:
         backend.close()
         return success
 
+    def search_keys(self, query, limit=50):
+        backend = storage_backend.StorageBackend()
+        results = backend.search_keys(query, limit)
+        backend.close()
+        return results
+
     def is_sandbox(self):
         return False
 
@@ -326,3 +332,33 @@ def get_sem(key):
             
     except Exception as e:
         return {"exists": False, "value": None, "last_updated": None}
+
+
+def search_sem(query, limit=50):
+    """
+    Search Semantic Memory by partial key or value match.
+    
+    Args:
+        query: Substring to search for (case-insensitive in keys/values)
+        limit: Maximum results
+        
+    Returns:
+        List of {"key": str, "value": any, "last_updated": str}
+    """
+    try:
+        rows = _active_store.search_keys(query.lower(), limit)
+        results = []
+        for canonical_key, val_str, last_updated in rows:
+            try:
+                val = json.loads(val_str)
+            except (json.JSONDecodeError, TypeError):
+                val = val_str
+            results.append({
+                "key": canonical_key,
+                "value": val,
+                "last_updated": last_updated
+            })
+        metrics.increment("sem_searches_total")
+        return results
+    except Exception as e:
+        return []
