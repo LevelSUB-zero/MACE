@@ -5,6 +5,33 @@
 
 ---
 
+## D-008 — Stage 7 & 8 Roadmap Expansion (Autonomous Daemons)
+**Date:** 2026-03-16  
+**Context:** Research into Open Claw's daemon architecture and recent breakthroughs in biological connectome simulation revealed that true "always-on" autonomy requires separating execution from an interactive frontend. Relying on an open IDE or terminal is insufficient for the "Robo-Police" Organism vision.  
+**Decision:** Expand the official MACE evolution roadmap to include Stage 7 (The Daemon: OS-native background persistence via launchd/systemd/schtasks) and Stage 8 (The Swarm: Autonomous cron-based isolated agent turns). Logged ARCH-003 to track the architectural spike.  
+**Consequences:** Sets a clear, definitive end-game for MACE's persistent operation. Avoids premature optimization by formally slotting these features *after* Stage 6, allowing current cognitive stages to be built out without distraction.  
+**Anti-Drift Check:** ✅ Autonomy — system will eventually run continuously in the background. ✅ Deterministic — relies on scheduled OS runs and highly structured state loops.
+
+---
+
+## D-007 — Test Suite Overhaul + Replay Entity Passthrough
+**Date:** 2026-02-27  
+**Context:** The v02_validation and stress test suites had 12+ stale assertions from the pre-NLU agent refactor (e.g. `"Stored X = Y"` → `"Got it! Your X is Y."`). Additionally, the router used `datetime.utcnow()` which produced non-deterministic timestamps, breaking replay comparisons. The replay module also didn't pass `entities` from the logged percept back into the executor, causing agents to produce different output during replay.  
+**Decision:** (1) Replace `datetime.utcnow()` with deterministic timestamp in router. (2) Add `entities` parameter to `executor.execute()` and have `replay.py` pass logged entities through. (3) Use `INSERT OR REPLACE` in reflective_writer for idempotent log writes. (4) Create canonical `tests/system/test_mace_system.py` (17 tests) as the authoritative regression guard.  
+**Consequences:** All 187 tests pass (0 failures). Replay is now fully deterministic with entity passthrough. The new system test suite becomes the Stage 3 gateway guard.  
+**Anti-Drift Check:** ✅ Autonomy — replay self-verification is now complete. ✅ Self-regeneration — system can now verify itself. ✅ Deterministic — router timestamps derived from seed.
+
+---
+
+## D-006 — Test Suite Quarantine for Future Stages
+**Date:** 2026-02-27  
+**Context:** The test suite threw collection errors on `tests/debug/`, `tests/stage4/`, and `tests/stage5/` due to missing modules that have not been implemented yet, which blocked CI/CD and the Stage 3 readiness check.  
+**Decision:** Delineate strict boundaries for active testing. Tests for future, unbuilt cognitive stages (4, 5) belong in quarantine/skip configuration (`pytest.ini` exclusions) until their respective stage is active.  
+**Consequences:** Prevents unbuilt stages from breaking the test suite of current stable stages. Provides a clean baseline for Stage 3 eligibility.  
+**Anti-Drift Check:** ✅ Autonomy — system stability is properly bounded to implemented behavior.
+
+---
+
 ## D-005 — Agent Key Normalization Requirement
 **Date:** 2026-02-22  
 **Context:** During MEM-002 E2E testing, `profile_agent` was constructing canonical keys using raw NLU entity values (e.g. `user/contacts/John/role`). The `_validate_key` regex (`[a-z0-9_]+`) silently rejected these, causing `put_sem` to return `INVALID_KEY_FORMAT` with no visible error.  
@@ -49,4 +76,4 @@
 
 ---
 
-*When adding a new decision: use next ID (D-005), include Anti-Drift Check for architectural decisions.*
+*When adding a new decision: use next ID (D-008), include Anti-Drift Check for architectural decisions.*

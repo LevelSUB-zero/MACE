@@ -58,20 +58,22 @@
 - **Spec Ref:** `docs/specs/SPEC-MEM-002.md`
 - **Bugs Fixed:** Profile agent canonical key case sensitivity, NLU few-shot coverage gaps
 
+### ARCH-001: Stage 3, 4, 5 Planning & Execution (Part 1: Health Check)
+- **Status:** ✅ Done
+- **Owner:** Solo
+- **Goal:** Execute the full-fledge health checkup and ensure perfect Stage 1 & 2 hygiene to establish Stage 3 eligibility.
+- **Tasks:**
+  - [x] Task 1: Add pytest.ini to quarantine future staged/debug tests.
+  - [x] Task 2: Fix root causes (router determinism, replay entity passthrough).
+  - [x] Task 3: Update stale test assertions across 6 test files.
+  - [x] Task 4: Create canonical system test suite (`tests/system/test_mace_system.py`, 17 tests).
+  - [x] Task 5: Validate 100% test pass rate — **187 passed, 0 failed**.
+  - [x] Task 6: Output `docs/phase3/STAGE_3_ELIGIBILITY.md` confirming eligibility.
+- **Spec Ref:** `docs/specs/SPEC-ARCH-001.md`
+
 ---
 
 ## 🟠 P1 — Next Up
-
-### ARCH-001: Stage 3, 4, 5 Planning & Execution
-- **Status:** ⚪ To Do
-- **Goal:** Execute the pipeline for Stages 3, 4, and 5 before moving to Stage 6 (The Organism).
-- **Tasks:**
-  - [ ] Stage 3: Advisory System & Authority Boundaries
-  - [ ] Stage 4: Shadow Cortex & Evolution
-  - [ ] Stage 5: Tool Synthesis & Final Pre-Stage-6 Golden Tests
-  - [ ] Anti-Drift Check against Vision Manifesto at each stage
-- **Depends On:** NLU-001 (parser must work before organism can "hear")
-
 ### INFRA-001: README Modernization
 - **Status:** 🟢 Ready
 - **Goal:** Update README.md to reflect current state (Stages 0-5 done, NLU pivot)
@@ -79,6 +81,16 @@
   - [ ] Update version, status, architecture diagram
   - [ ] Add NLU section
   - [ ] Link to MACE_STATUS.md
+
+### NLU-003: Native Multimodal Memory Pipeline (Gemini Embedding 2.0)
+- **Status:** 🟢 Ready
+- **Owner:** Solo
+- **Goal:** Upgrade semantic and episodic memory pipelines to natively process mixed media (text, audio, image, video) into a unified vector space using Gemini Embedding 2.0.
+- **Tasks:**
+  - [ ] Implement Gemini Embedding 2.0 client in `src/mace/memory/`.
+  - [ ] Map multimodal outputs to existing SQLite vectors using Matryoshka dimension truncation (768-D).
+  - [ ] Enable cross-modal retrieval in Memory Agent (e.g. text query -> audio response).
+- **Rationale:** Future-proof MACE's sensory perception without violating the core Organism architecture or wiping the current database.
 
 ---
 
@@ -121,12 +133,21 @@
 ### INFRA-002: Docker Containerization
 - Containerize MACE for reproducible deployment
 
+### ARCH-002: Evaluate MoE / Sparse Activation Architectures
+- **Goal:** Investigate deep integration of Mixture-of-Experts (MoE) or Sparse Activation open-weight models for MACE's internal cognitive nodes.
+- **Rationale:** Allow MACE to run complex, continuous autonomous reasoning loops on lighter consumer hardware by minimizing the active "awake" memory footprint during inference.
+
+### ARCH-003: Architectural Spike for OS-Native Daemonization
+- **Goal:** Research and prototype background execution loops for MACE using OS-level task schedulers (launchd, systemd, schtasks).
+- **Rationale:** Transition MACE from a reactive CLI tool to a proactive, persistent organism that continuously patrols and executes "isolated turns" (Stage 7/8).
+
 ---
 
 ## ✅ Recently Completed
 
 | ID | Description | Completed |
 |----|-------------|-----------|
+| ARCH-001 | Stage 3 Eligibility Health Check (187/187 tests pass) | 2026-02-27 |
 | MEM-003 | Memory Persistence & Cross-Layer Search | 2026-02-26 |
 | MEM-002 | Holistic Memory Saving & Retrieving | 2026-02-26 |
 | NLU-001 | NLU Parser — Gemma 3 1B prompt engineering (10/10) | 2026-02-20 |
