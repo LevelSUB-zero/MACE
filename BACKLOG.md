@@ -75,12 +75,12 @@
 
 ## 🟠 P1 — Next Up
 ### INFRA-001: README Modernization
-- **Status:** 🟢 Ready
+- **Status:** ✅ Done
 - **Goal:** Update README.md to reflect current state (Stages 0-5 done, NLU pivot)
 - **Tasks:**
-  - [ ] Update version, status, architecture diagram
-  - [ ] Add NLU section
-  - [ ] Link to MACE_STATUS.md
+  - [x] Update version, status, architecture diagram
+  - [x] Add NLU section
+  - [x] Link to MACE_STATUS.md
 
 ### NLU-003: Native Multimodal Memory Pipeline (Gemini Embedding 2.0)
 - **Status:** 🟢 Ready

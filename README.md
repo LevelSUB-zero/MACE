@@ -1,13 +1,16 @@
 # MACE (Meta Aware Cognitive Engine)
 
-**Version**: 1.0.0 (Stage-1)  
-**Status**: Production Ready ✅
+**Version**: 1.1.0 (Stage-2)  
+**Status**: Stage 2 Complete, Stage 3 Eligible 🟡
+
+> **Note:** For the single source of truth regarding the project's current status, roadmap, and active workstreams, always refer to [MACE_STATUS.md](MACE_STATUS.md).
 
 A deterministic cognitive execution engine with 100% replay fidelity, comprehensive validation tooling, and production-ready operational infrastructure.
 
 ## ✨ Features
 
 - 🎯 **100% Deterministic Execution** - Guaranteed replay fidelity
+- 🗣️ **Deterministic NLU** - Gemma 3 1B prompt-engineered semantic parser ensures zero-hallucination input handling
 - 🧠 **Self-Representation** - Module registry with dependency graphs
 - 💾 **Persistent BrainState** - Stateful execution across restarts
 - 📜 **Performance Timeline** - Append-only APT event logging (Performance Event Timeline)
@@ -50,8 +53,8 @@ print(output["text"])  # Deterministic result
 ### Verification
 
 ```bash
-# Run test suite
-pytest tests/stage1/ -v
+# Run canonical system test suite
+pytest tests/system/test_mace_system.py -v
 
 # Verify replay fidelity
 python tools/run_replay_benchmark.py --seeds 1..100
@@ -67,23 +70,24 @@ python tools/benchmark_performance.py --requests 100
 
 | Component | Tests | Status |
 |-----------|-------|--------|
-| Core Tests | 28/28 | ✅ |
+| System Tests | 187/187 | ✅ |
 | Replay Fidelity | 100% | ✅ |
+| NLU Accuracy | 10/10 | ✅ |
 | Security | 4/4 | ✅ |
 | Performance (p95) | 118ms | ✅ |
-| Fault Injection | 4/4 | ✅ |
 
 ## 🏗️ Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────┐
-│           Executor (Stage-1)                │
+│           Executor (Stage-2)                │
 ├─────────────────────────────────────────────┤
-│  1. Router (Deterministic Agent Selection)  │
-│  2. BrainState (Persistent State)           │
-│  3. Agent Execution                         │
-│  4. Council (Approval)                      │
-│  5. Reflective Log (Signed)                 │
+│  1. NLU Parser (Gemma 3 1B)                 │
+│  2. Router (Deterministic Agent Selection)  │
+│  3. BrainState (Persistent State)           │
+│  4. Agent Execution                         │
+│  5. Council (Approval)                      │
+│  6. Reflective Log (Signed)                 │
 └─────────────────────────────────────────────┘
          ↓                            ↓
 ┌──────────────────┐        ┌──────────────────┐
@@ -143,11 +147,10 @@ Error rate: 0%
 
 ```bash
 # Full test suite
-pytest tests/stage1/ -v
+pytest tests/ -v
 
-# Specific modules
-pytest tests/stage1/test_executor.py -v
-pytest tests/stage1/test_replay.py -v
+# Canonical System Guard
+pytest tests/system/test_mace_system.py -v
 
 # With coverage
 pytest tests/stage1/ --cov=src/mace --cov-report=html
@@ -180,12 +183,12 @@ See [RELEASE_NOTES_v1.0.0.md](RELEASE_NOTES_v1.0.0.md) for detailed changelog.
 
 ## 🗺️ Roadmap
 
-### Stage-2 (Planned)
-- Vault integration for secrets management
-- Database encryption at rest
-- Advanced monitoring (Prometheus/Grafana)
-- ML-based router scoring
-- Performance optimizations
+MACE's evolution is currently planned across 8 stages:
+- **Stages 0-2**: Core primitives, routing, deterministic NLU, and memory governance (✅ COMPLETE)
+- **Stages 3-5**: Advisory, meta-cognition, and self-improvement tool synthesis (⚪ PENDING)
+- **Stages 6-8**: True autonomy, OS-native background daemons, and proactive swarm behavior (🎯 VISION)
+
+Full roadmap details and active workstreams are maintained in the central [MACE_STATUS.md](MACE_STATUS.md) tracker.
 
 ## 🤝 Contributing
 
