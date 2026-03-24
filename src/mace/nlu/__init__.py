@@ -8,6 +8,5 @@ Provides hierarchical intent classification with:
 """
 
 from .config import ROOT_INTENTS, MEMORY_TYPES, INTENT_TO_MEMORY
-from .predictor import NLUPredictor
 
-__all__ = ["NLUPredictor", "ROOT_INTENTS", "MEMORY_TYPES", "INTENT_TO_MEMORY"]
+__all__ = ["ROOT_INTENTS", "MEMORY_TYPES", "INTENT_TO_MEMORY"]

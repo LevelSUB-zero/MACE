@@ -34,7 +34,7 @@ AGENTS = {
     "generic_agent": generic_agent
 }
 
-def execute(percept_text, intent="unknown", seed=None, log_enabled=True):
+def execute(percept_text, intent="unknown", seed=None, log_enabled=True, entities=None):
     """
     Main execution loop for Stage-1.
     """
@@ -59,7 +59,7 @@ def execute(percept_text, intent="unknown", seed=None, log_enabled=True):
     deterministic.init_seed(next_seed)
 
     # 1.5 NLU Parsing
-    parsed_entities = {}
+    parsed_entities = entities if entities is not None else {}
     parsed_complexity = 1
     # Only run NLU if intent wasn't explicitly provided (e.g. by tests)
     if intent == "unknown":

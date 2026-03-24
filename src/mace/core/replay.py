@@ -50,9 +50,10 @@ def replay_log(log_entry):
         # 4. Run executor
         percept_text = log_entry["percept"]["text"]
         intent = log_entry["percept"]["intent"]
+        entities = log_entry["percept"].get("entities", {})
         
         # Disable log writing during replay
-        final_output, new_log = executor.execute(percept_text, intent=intent, seed=seed, log_enabled=False)
+        final_output, new_log = executor.execute(percept_text, intent=intent, seed=seed, log_enabled=False, entities=entities)
         
         # 5. Compare
         # 5. Compare

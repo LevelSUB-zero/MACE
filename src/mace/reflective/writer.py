@@ -64,7 +64,7 @@ def write_log(log_entry):
         timestamp = log_entry["timestamp"]
         
         persistence.execute_query(conn,
-            "INSERT INTO reflective_logs (log_id, log_json, immutable_subpayload, signature, signature_key_id, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT OR REPLACE INTO reflective_logs (log_id, log_json, immutable_subpayload, signature, signature_key_id, created_at) VALUES (?, ?, ?, ?, ?, ?)",
             (log_id, log_json, subpayload_json, signature, key_id, timestamp)
         )
         conn.commit()

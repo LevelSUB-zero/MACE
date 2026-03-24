@@ -7,7 +7,16 @@
 
 ## 🔥 P0 — Current Sprint (Active Work)
 
-### NLU-001: Deterministic NLU Parser
+### ARCH-002: Stage Integration & Organism Consolidation
+- **Status:** 🟡 In Progress
+- **Goal:** Resolve structural decay by pruning dead prototypes and wiring Stage 1-2 foundations into a snapshot-driven pipeline.
+- **Tasks:**
+  - [x] Create Consolidation Map (Audit)
+  - [x] Create SPEC-CONSOL-001
+  - [ ] Prune 14+ True Orphans in `src/mace`
+  - [ ] Implement WM Promotion in `brainstate.py`
+  - [ ] Wire `rehydrate` and `replay` into `executor`
+- **Spec Ref:** `docs/specs/SPEC-CONSOL-001.md`
 - **Status:** ✅ Done (via prompt engineering pivot)
 - **Owner:** Solo
 - **Goal:** Deterministic NLU parser that outputs structured JSON

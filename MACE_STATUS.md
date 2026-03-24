@@ -1,25 +1,24 @@
 # 🧠 MACE Mission Control — Single Source of Truth
 
 > **Last Updated:** 2026-03-16
-> **Active Stage:** Stage 2 COMPLETE → Stage 3 ELIGIBLE
-> **Overall Project Phase:** Stage 1 COMPLETE → Stage 2 (Active) → Stages 3-5 Pipeline → Stage 6-8 (The Organism/Swarm) = VISION
+> **Active Stage:** Stage 2 COMPLETE → Stage 3 ACTIVE
+> **Overall Project Phase:** Stage 1-2 COMPLETE → Stage 3 (Active) → Stages 4-5 Pipeline → Stage 6-8 (The Organism/Swarm) = VISION
 
 ---
 
 ## 🚦 Current Focus
 
-### Active Workstream: ARCH-001 — Stage 3 Eligibility Health Check (✅ Complete)
-**Goal:** Run a full-fledged health checkup and define Stage 3 testing eligibility.
+### Active Workstream: ARCH-002 — Stage Integration & Organism Consolidation (🟡 ACTIVE)
+**Goal:** Prune dead prototypes and wire Stage 1-2 foundations into a snapshot-driven cognitive pipeline.
 
 | Task | Status | Key Files |
 |------|--------|-----------|
-| Create Spec | ✅ Done | `docs/specs/SPEC-ARCH-001.md` |
-| Test suite inclusions exclusions | ✅ Done | `pytest.ini` |
-| Fix root causes (router, replay) | ✅ Done | `stage1_router.py`, `executor.py`, `replay.py` |
-| Update stale test assertions | ✅ Done | 6 test files updated |
-| Create system test suite | ✅ Done | `tests/system/test_mace_system.py` (17 tests) |
-| Full suite pass (187/187) | ✅ Done | Terminal |
-| Generate Eligibility Document | ✅ Done | `docs/phase3/STAGE_3_ELIGIBILITY.md` |
+| Create Consolidation Map | ✅ Done | `consolidation_map.md` |
+| Create ARCH-002 Spec | ✅ Done | `SPEC-CONSOL-001.md` |
+| Prune True Orphans | 🟡 In Progress | `src/mace/` |
+| Fix WM Promotion | 🟢 Ready | `brainstate.py` |
+| Wire Rehydrate/Replay | 🟢 Ready | `executor.py` |
+| Final Acceptance Audit | 🟢 Ready | `tests/` |
 
 ### Blocked / Waiting
 - None currently.
@@ -34,8 +33,8 @@ MACE = "Meta Aware Cognitive Engine" — Governed Digital Life, NOT an LLM wrapp
 Evolution Stages:
   Stage 0 (The Stub/Rock)       ✅ DONE
   Stage 1 (The Skeleton/Spine)  ✅ DONE
-  Stage 2 (Memory Governance)    🟡 ACTIVE
-  Stage 3 (The Advisor/Ghost)    ⚪ PENDING
+  Stage 2 (Memory Governance)    ✅ DONE
+  Stage 3 (The Advisor/Ghost)    🟡 ACTIVE
   Stage 4 (The Mirror/Cortex)    ⚪ PENDING — Shadow Cortex, Meta-Cognition
   Stage 5 (The Architect/Hands)  ⚪ PENDING — Self-Improvement, Tool Synthesis
   Stage 6 (The Organism/Being)   ⚪ PENDING — True Autonomy (Original Vision)

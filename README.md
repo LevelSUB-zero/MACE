@@ -1,7 +1,7 @@
 # MACE (Meta Aware Cognitive Engine)
 
-**Version**: 1.1.0 (Stage-2)  
-**Status**: Stage 2 Complete, Stage 3 Eligible 🟡
+**Version**: 1.1.0-dev (Stage-3 / Consolidation)  
+**Status**: Stages 1-2 Complete, Stage 3 Active 🟡
 
 > **Note:** For the single source of truth regarding the project's current status, roadmap, and active workstreams, always refer to [MACE_STATUS.md](MACE_STATUS.md).
 
@@ -185,7 +185,9 @@ See [RELEASE_NOTES_v1.0.0.md](RELEASE_NOTES_v1.0.0.md) for detailed changelog.
 
 MACE's evolution is currently planned across 8 stages:
 - **Stages 0-2**: Core primitives, routing, deterministic NLU, and memory governance (✅ COMPLETE)
-- **Stages 3-5**: Advisory, meta-cognition, and self-improvement tool synthesis (⚪ PENDING)
+- **Integration Phase**: Stage 1-2 Organism Consolidation (Pruning > Wiring) (🟡 ACTIVE)
+- **Stage 3**: The Advisor/Ghost (Epistemic Agency) (🟡 ACTIVE)
+- **Stages 4-5**: Meta-cognition, and self-improvement tool synthesis (⚪ PENDING)
 - **Stages 6-8**: True autonomy, OS-native background daemons, and proactive swarm behavior (🎯 VISION)
 
 Full roadmap details and active workstreams are maintained in the central [MACE_STATUS.md](MACE_STATUS.md) tracker.

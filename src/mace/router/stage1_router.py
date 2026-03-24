@@ -97,7 +97,7 @@ def route(percept: dict, brainstate: dict, available_agents: list) -> dict:
         "decision_id": decision_id,
         "selected_agents": [{"agent_id": agent_id, "confidence": confidence}],
         "reasoning": f"Routed based on NLU intent: {intent}",
-        "timestamp": datetime.datetime.utcnow().isoformat() + "Z",
+        "timestamp": deterministic.deterministic_timestamp(deterministic.increment_counter("router_time")),
         "router_version": "stage1_nlu_v3"
     }
     

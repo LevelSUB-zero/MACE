@@ -1,11 +1,8 @@
-# Stage-3: Advisory Cognition & Meta-Observation
 """
-Stage-3 introduces epistemic agency without executive authority.
-Learning can advise but never act. Advice can be deleted without effect.
-"""
+Module: stage3
+Stage: 3
+Purpose: Package init for the Stage 3 Advisory System.
 
-from .advisory_output import AdvisoryOutput, AdvisoryType
-from .meta_observation import MetaObservation
-from .advisory_guard import AdvisoryGuard
-from .advisory_validator import AdvisoryValidator
-from .mode_transition import ModeTransitionManager
+Part of MACE (Meta Aware Cognitive Engine).
+See docs/phase3/advisory_system_spec.md
+"""

@@ -37,8 +37,12 @@ os.environ.setdefault("MACE_DB_URL", "sqlite:///stage2_litmus.db")
 
 # Fix Windows console encoding
 if sys.platform == 'win32':
+    # Removing sys.stdout override as it breaks pytest capture mechanism
+    # try:
+    #     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    # except Exception:
+    #     pass
     import io
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 from mace.core import deterministic
 from mace.stage2 import shadow_guard, mem_snn_shadow

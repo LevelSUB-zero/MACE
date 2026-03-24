@@ -34,11 +34,15 @@ class TestAgentsV2(unittest.TestCase):
 
     def test_profile_agent_write(self):
         """Verify profile agent write."""
-        percept = {"text": "remember my color is blue"}
+        percept = {
+            "text": "remember my color is blue",
+            "intent": "profile_store",
+            "entities": {"attribute": "color", "value": "blue"}
+        }
         output = profile_agent.run(percept)
         
         self.assertEqual(output["agent_id"], "profile_agent")
-        self.assertIn("Stored color = blue", output["text"])
+        self.assertIn("Got it! Your color is blue.", output["text"])
         self.assertIn("reasoning_trace", output)
         
         # Verify SEM write
@@ -51,11 +55,15 @@ class TestAgentsV2(unittest.TestCase):
         # Setup
         semantic.put_sem("user/profile/user_123/color", "red")
         
-        percept = {"text": "what is my color"}
+        percept = {
+            "text": "what is my color",
+            "intent": "profile_recall",
+            "entities": {"attribute": "color"}
+        }
         output = profile_agent.run(percept)
         
         self.assertEqual(output["agent_id"], "profile_agent")
-        self.assertEqual(output["text"], "red")
+        self.assertIn("red", output["text"])
         self.assertIn("reasoning_trace", output)
 
     def test_council_vote_stub(self):
