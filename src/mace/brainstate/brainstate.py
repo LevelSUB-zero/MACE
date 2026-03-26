@@ -70,21 +70,20 @@ def tick(brainstate, events=None):
     decay_rate = config_loader.get_attention_decay_rate()
     brainstate["attention_gain"] *= decay_rate
     
-    # 2. Update WM TTLs
+    # 2. Update WM TTLs and promote expired items (Rule 4.1)
     active_wm = []
+    promoted_items = []
     for item in brainstate["working_memory"]:
         item["ttl"] -= 1
         if item["ttl"] > 0:
             active_wm.append(item)
         else:
-            # Expired -> Promote to CWM or Episodic?
-            # For Stage-1, we just drop from WM. 
-            # Promotion logic might be handled by a separate agent or process.
-            # But the plan says "promotion logic (WM -> CWM -> Episodic)".
-            # We'll just mark it as expired here.
-            pass
+            # Expired -> Promote to CWM / Episodic (Rule 4.1)
+            item["promoted_at_tick"] = brainstate["tick_count"]
+            promoted_items.append(item)
             
     brainstate["working_memory"] = active_wm
+    brainstate["_promoted_items"] = promoted_items
     
     # 3. Update Snapshot ID
     # New ID depends on previous state + events

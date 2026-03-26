@@ -13,6 +13,9 @@ from mace.memory.wm import WorkingMemory
 from mace.memory.cwm import ContextualWorkingMemory
 from mace.memory.episodic import EpisodicMemory
 from mace.brainstate import persistence as bs_persistence
+import logging
+
+logger = logging.getLogger(__name__)
 
 from mace.governance import killswitch
 from mace.config import schema_validator
@@ -246,6 +249,26 @@ def execute(percept_text, intent="unknown", seed=None, log_enabled=True, entitie
     brainstate.tick(bs_before)
     bs_after = bs_before # In-place update
     
+    # Persist promoted WM items to Episodic Memory (Rule 4.1)
+    promoted = bs_after.pop("_promoted_items", [])
+    if promoted:
+        try:
+            episodic_promo = EpisodicMemory(job_seed=next_seed)
+            for promo_item in promoted:
+                episodic_promo.record_interaction(
+                    percept_text=f"[WM_PROMOTION] {promo_item.get('content', '')}",
+                    response_text="promoted_from_wm",
+                    agent_id="brainstate",
+                    job_seed=next_seed,
+                    metadata={
+                        "memory_id": promo_item.get("memory_id", "unknown"),
+                        "promoted_at_tick": promo_item.get("promoted_at_tick"),
+                        "source": "wm_promotion"
+                    }
+                )
+        except Exception as e:
+            logger.warning("WM promotion episodic write failed: %s", e)
+    
     if errors:
         bs_after["last_error"] = errors[-1]
 
@@ -296,8 +319,8 @@ def execute(percept_text, intent="unknown", seed=None, log_enabled=True, entitie
             }
         )
     except Exception as e:
-        # Episodic recording failure should not break execution
-        pass
+        # Episodic recording failure should not break execution but MUST be logged
+        logger.warning("Episodic recording failed for percept '%s': %s", percept_text, e)
         
     return final_output, log_entry
 

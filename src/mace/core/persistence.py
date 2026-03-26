@@ -43,12 +43,8 @@ def execute_query(conn, query, params=None):
         cursor.execute(query, params)
         return cursor
     else:
-        # Postgres uses %s
-        # We need to convert ? to %s if we want a unified query syntax, 
-        # or just write queries carefully.
-        # For this stage, let's assume we write queries compatible with the driver 
-        # or use a simple replacement if needed.
-        # Simple hack: replace ? with %s for Postgres
+        # Postgres uses %s for parameter substitution.
+        # Convert SQLite-style ? placeholders to %s for cross-backend compatibility.
         if "?" in query:
             query = query.replace("?", "%s")
             

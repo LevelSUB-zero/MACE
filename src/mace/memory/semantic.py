@@ -116,8 +116,8 @@ def sem_resolve_alias(text, user_id="user_id"):
         try:
             with open(SYNONYMS_FILE, "r") as f:
                 synonyms = json.load(f)
-        except:
-            pass
+        except (json.JSONDecodeError, OSError) as e:
+            logging.getLogger(__name__).warning("Failed to load synonyms from %s: %s", SYNONYMS_FILE, e)
             
     if text in synonyms:
         resolved = synonyms[text]
