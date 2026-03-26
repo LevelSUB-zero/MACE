@@ -1,0 +1,44 @@
+# ARCH-002: Organism Consolidation — Engineer Walkthrough
+
+## Goal
+Resolve structural decay, prune dead code, and fix critical stubs to make MACE a cohesive snapshot-driven organism.
+
+## Changes Made
+
+### Task 1: Dead Code Pruning (10 files deleted)
+| File | Reason |
+|------|--------|
+| [src/mace/apt/engine.py](file:///f:/MAIN%20PROJECTS/Mace/src/mace/apt/engine.py) | Replaced by SelfRepresentation graph fields |
+| `src/mace/core/llm_client.py` | Replaced by [ollama_nlu.py](file:///f:/MAIN%20PROJECTS/Mace/src/mace/nlu/ollama_nlu.py) (D-004) |
+| `src/mace/core/reflective_log.py` | Consolidated into `runtime/reflective_writer.py` |
+| `src/mace/router/router_stage0.py` | Dead; Stage-1 router is current standard |
+| `src/mace/memory/memory_item.py` | Replaced by specific models |
+| `src/mace/memory/consolidator.py` | BrainState handles consolidation |
+| [tests/stage1/test_apt.py](file:///f:/MAIN%20PROJECTS/Mace/tests/stage1/test_apt.py) | Tested deleted module |
+| [find_dead_code.py](file:///f:/MAIN%20PROJECTS/Mace/find_dead_code.py) | Stray root script |
+| [tmp_audit.py](file:///f:/MAIN%20PROJECTS/Mace/tmp_audit.py) | Stray root script |
+| [demo_organism.py](file:///f:/MAIN%20PROJECTS/Mace/demo_organism.py) | Stray root script |
+
+### Task 2: Critical Stub Fixes
+- **[brainstate.py](file:///f:/MAIN%20PROJECTS/Mace/src/mace/brainstate/brainstate.py)**: Replaced [pass](file:///f:/MAIN%20PROJECTS/Mace/tests/stage3/test_stress.py#118-122) with full WM promotion logic (Rule 4.1). Expired items are now collected and tagged with `promoted_at_tick`.
+- **[executor.py](file:///f:/MAIN%20PROJECTS/Mace/src/mace/runtime/executor.py)**: Wired promotion to Episodic Memory. Replaced [pass](file:///f:/MAIN%20PROJECTS/Mace/tests/stage3/test_stress.py#118-122) with `logger.warning()` for episodic failures.
+- **[sem_interface.py](file:///f:/MAIN%20PROJECTS/Mace/src/mace/memory/sem_interface.py)**: [search()](file:///f:/MAIN%20PROJECTS/Mace/src/mace/memory/sem_interface.py#25-40) now delegates to `semantic.search_sem()`. Added module docstring and type hints.
+- **[semantic.py](file:///f:/MAIN%20PROJECTS/Mace/src/mace/memory/semantic.py)**: Replaced bare `except: pass` with typed `except (json.JSONDecodeError, OSError)` and logging.
+
+### Task 3: Governance Hardening
+- **[amendment.py](file:///f:/MAIN%20PROJECTS/Mace/src/mace/governance/amendment.py)**: Converted from fail-open (`except: pass`) to fail-halt. New [GovernanceViolation](file:///f:/MAIN%20PROJECTS/Mace/src/mace/governance/amendment.py#18-20) exception raised on corrupt/unreadable policy files.
+
+### Task 4: Tech Debt Cleanup
+- **[persistence.py](file:///f:/MAIN%20PROJECTS/Mace/src/mace/core/persistence.py)**: Replaced "Simple hack" comment with proper cross-backend documentation.
+
+## Validation
+- **31/32 tests passed** (82s runtime)
+- **1 pre-existing failure**: [test_router_selection](file:///f:/MAIN%20PROJECTS/Mace/tests/stage1/test_executor.py#45-51) — intent `"profile"` not matching `profile_agent` capabilities. This is a router scoring issue predating our changes.
+- **0 import errors** after pruning
+
+## Known Issues
+- [rewards.py](file:///f:/MAIN%20PROJECTS/Mace/src/mace/memory/rewards.py) hardcoded known-facts dict — deferred to a future config migration task
+- [candidate.py](file:///f:/MAIN%20PROJECTS/Mace/src/mace/memory/candidate.py) hardcoded dangerous keywords — deferred to policy config migration
+- [test_router_selection](file:///f:/MAIN%20PROJECTS/Mace/tests/stage1/test_executor.py#45-51) — pre-existing router intent mapping needs Architect review
+
+## Ready for Review: YES

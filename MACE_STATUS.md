@@ -1,6 +1,6 @@
 # 🧠 MACE Mission Control — Single Source of Truth
 
-> **Last Updated:** 2026-03-16
+> **Last Updated:** 2026-03-26
 > **Active Stage:** Stage 2 COMPLETE → Stage 3 ACTIVE
 > **Overall Project Phase:** Stage 1-2 COMPLETE → Stage 3 (Active) → Stages 4-5 Pipeline → Stage 6-8 (The Organism/Swarm) = VISION
 
@@ -15,10 +15,10 @@
 |------|--------|-----------|
 | Create Consolidation Map | ✅ Done | `consolidation_map.md` |
 | Create ARCH-002 Spec | ✅ Done | `SPEC-CONSOL-001.md` |
-| Prune True Orphans | 🟡 In Progress | `src/mace/` |
-| Fix WM Promotion | 🟢 Ready | `brainstate.py` |
-| Wire Rehydrate/Replay | 🟢 Ready | `executor.py` |
-| Final Acceptance Audit | 🟢 Ready | `tests/` |
+| Prune True Orphans | ✅ Done | `src/mace/` |
+| Fix WM Promotion | ✅ Done | `brainstate.py` |
+| Wire Rehydrate/Replay | ✅ Done | `executor.py` |
+| Final Acceptance Audit | ✅ Done | `tests/` |
 
 ### Blocked / Waiting
 - None currently.

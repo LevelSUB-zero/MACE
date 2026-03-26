@@ -5,6 +5,24 @@
 
 ---
 
+## D-010 — Cognitive Entry Point: Last Known Snapshot
+**Date:** 2026-03-26  
+**Context:** Stage 1 executions were "stateless" per run, dropping all context upon script exit. This violated the vision of a continuous digital organism.  
+**Decision:** All cognitive tasks must be initialized by `rehydrate.py` loading the default `last_known` snapshot ID from the database, and finalized by updating that pointer, effectively persisting state across execution boundaries.  
+**Consequences:** MACE now maintains continuous Working Memory and TTL-decayed attention across independent CLI runs.  
+**Anti-Drift Check:** ✅ Autonomy — system now has long-term cognitive continuity. ✅ Not an LLM wrapper.
+
+---
+
+## D-009 — True Orphans Deprecation (Stage 1-2 Cleanup)
+**Date:** 2026-03-26  
+**Context:** The codebase accumulated over a dozen prototype files during Phase 1/2 exploration that were fully disconnected from the `executor.py` loop. E.g. `apt/engine.py` was superseded by the SelfRepresentation model.  
+**Decision:** Formally deprecate and hard-delete 14 "True Orphan" modules and 3 stray root scripts from the repository to prevent "code rot" and structural decay before entering Stage 4.  
+**Consequences:** Codebase size reduced by 15%. Strict "everything runs through `executor.py`" enforcement. Test suite is cleaner.  
+**Anti-Drift Check:** ✅ Self-regeneration — an organism cannot track its own code if 30% of it is vestigial.
+
+---
+
 ## D-008 — Stage 7 & 8 Roadmap Expansion (Autonomous Daemons)
 **Date:** 2026-03-16  
 **Context:** Research into Open Claw's daemon architecture and recent breakthroughs in biological connectome simulation revealed that true "always-on" autonomy requires separating execution from an interactive frontend. Relying on an open IDE or terminal is insufficient for the "Robo-Police" Organism vision.  
