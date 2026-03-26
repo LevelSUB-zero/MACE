@@ -5,9 +5,26 @@
 
 > **Note:** For the single source of truth regarding the project's current status, roadmap, and active workstreams, always refer to [MACE_STATUS.md](MACE_STATUS.md).
 
-A deterministic cognitive execution engine with 100% replay fidelity, comprehensive validation tooling, and production-ready operational infrastructure.
+**MACE** is not a chatbot, an LLM wrapper, or a sandboxed agent framework. It is an architecture for **Governed Digital Life**—a purely regenerative, self-improving, meta-cognitive entity.
 
-## ✨ Features
+While current AI optimizes for token generation, MACE prioritizes **Cognition over Generation**. It maintains a structured, observable internal state (Working Memory, Episodic Memory, Council Votes), ensuring that before the system can act or improve itself, it must *understand* itself.
+
+## 🧬 The Vision: An Artificial Organism
+
+Our North Star is to build a system that is "more of an organism than an AI."
+
+- **Epistemic to Executive Agency:** Currently, MACE operates with *Epistemic Agency* ("I can see but I cannot touch"). Future stages will unlock *Governed Executive Authority*, allowing the system to act upon the world and itself.
+- **Regenerative Self-Improvement:** MACE will eventually assess its own capability gaps, generate new internal modules to fill them, and rewrite its own codebase.
+- **Governance as DNA:** Safety in MACE isn't achieved through easily bypassed "guardrails." Instead, strict cryptographic governance (HMAC-signed logs, hard-coded kill switches, immutable policies) acts as the system's DNA.
+
+## 🎯 Use Cases & Applications
+
+Because MACE is designed for rigorous, verifiable cognition rather than fast chatting, its target use cases are fundamentally different from standard LLMs:
+- **Autonomous System Administration:** Continuously monitoring, debugging, and patching server infrastructures with a perfect audit trail of *why* every decision was made.
+- **Deep Research & Synthesis:** Conducting long-running (weeks/months) research tasks where maintaining complex state and cross-referencing past learnings without context degradation is critical.
+- **Governed Tool Synthesis:** Writing, testing, and deploying its own custom software tools to solve novel problems safely within an isolated registry.
+
+## ✨ Technical Foundation
 
 - 🎯 **100% Deterministic Execution** - Guaranteed replay fidelity
 - 🗣️ **Deterministic NLU** - Gemma 3 1B prompt-engineered semantic parser ensures zero-hallucination input handling
